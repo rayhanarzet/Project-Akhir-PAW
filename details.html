@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+   <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="details.css">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Korean Shop - New Arrivals</title>
+<body>
+ <header class="bg-white shadow">
+    <div class="max-w-7xl  mx-auto flex items-center justify-between p-4">
+      <img src="assets/LOGO.png" alt="Jippy" class="w-[64px] h-[64px]">
+      <nav class="flex gap-10 items-center">
+  <a href="menu.html" class="bg-[#FDE7A1] px-4 py-1 rounded-lg font-medium border border-black">Dashboard</a>
+  <a href="preorder.html" class="text-black font-medium cursor-pointer hover:bg-[#fff2c9] hover:text-black rounded-lg transition duration-300 px-4 py-1">Pre-Order</a>
+  <a href="trackorder.html" class="text-black font-medium cursor-pointer hover:bg-[#fff2c9] hover:text-black rounded-lg transition duration-300 px-4 py-1">My Order</a>
+  <a href="livechat.html" class="text-black font-medium cursor-pointer hover:bg-[#fff2c9] hover:text-black rounded-lg transition duration-300 px-4 py-1">Live Chat</a>
+</nav>
+      <div class="flex gap-4 items-center">
+        <button><img src="assets/notif.png" alt="Notifikasi" class="w-[22px]"></button>
+        <button><img src="assets/profil.png" alt="Akun" class="w-[24px]"></button>
+      </div>
+    </div>
+  </header>
+  
+  <div class="bottom-nav">
+   <div class="bottom-nav">
+  <div class="hamburger" aria-label="Menu" role="button" tabindex="0" onclick="toggleSidebar()">
+    <span></span>
+    <span></span>
+    <span></span>
+  </div>
+</div>
+
+<div class="sidebar" id="sidebar">
+  <button class="close-btn" onclick="toggleSidebar()">✕</button>
+
+  <ul class="menu">
+    <li>
+      <div class="menu-title" onclick="toggleDropdown('beauty')">Korean Beauty ▾</div>
+      <ul class="submenu" id="beauty">
+        <li><a href="menu2.html">Skincare</a></li>
+        <li><a href="#">Makeup</a></li>
+        <li><a href="#">Body Care</a></li>
+        <li><a href="#">Hair Care</a></li>
+        <li><a href="#">View All</a></li>
+      </ul>
+    </li>
+
+    <li>
+      <div class="menu-title" onclick="toggleDropdown('fashion')">Korean Fashion ▾</div>
+      <ul class="submenu" id="fashion">
+        <li><a href="#">Tops</a></li>
+        <li><a href="#">Bottoms</a></li>
+        <li><a href="#">Jacket</a></li>
+        <li><a href="#">Shoes</a></li>
+        <li><a href="#">Accessories</a></li>
+        <li><a href="#">View All</a></li>
+      </ul>
+    </li>
+
+    <li>
+      <div class="menu-title" onclick="toggleDropdown('kpop')">K-Pop Merch ▾</div>
+      <ul class="submenu" id="kpop">
+        <li><a href="#">Album</a></li>
+        <li><a href="#">Photocards</a></li>
+        <li><a href="#">Kpop Accessories</a></li>
+        <li><a href="#">Lightstick</a></li>
+        <li><a href="#">View All</a></li>
+      </ul>
+    </li>
+
+    <li>
+      <div class="menu-title" onclick="toggleDropdown('food')">Korean Food ▾</div>
+      <ul class="submenu" id="food">
+        <li><a href="#">Main Course</a></li>
+        <li><a href="#">Snack</a></li>
+        <li><a href="#">Drinks</a></li>
+        <li><a href="#">Fast Food</a></li>
+        <li><a href="#">View All</a></li>
+      </ul>
+    </li>
+  </ul>
+</div>
+
+  <div class="search-container">
+  <input type="text" class="search-input" placeholder="Search product" />
+  <img src="assets/search.png" alt="Search" class="search-icon" />
+    </div>
+</div>
+
+<div class="container">
+  <div class="left-section">
+    <img src="assets/numbuzin.jpeg" alt="Main Product" class="main-image" />
+    <div class="thumbnail-row">
+      <img src="assets/numbuzin.jpeg" alt="Thumb 1" onclick="document.querySelector('.main-image').src=this.src" />
+      <img src="assets/num1.jpeg" alt="Thumb 1" onclick="document.querySelector('.main-image').src=this.src" />
+      <img src="assets/num2.jpg" alt="Thumb 2" onclick="document.querySelector('.main-image').src=this.src" />
+      <img src="assets/num3.jpg" alt="Thumb 3" onclick="document.querySelector('.main-image').src=this.src" />
+    </div>
+  </div>
+
+  <div class="right-section">
+   
+    <div class="product-info">
+      <h1>Numbuzin Pantothenic Active Shooting Cream</h1>
+      <div class="rating">
+        ★★★★★ <span>(4.9)</span> <span style="color: #00bfff;">531 Reviews</span>
+        <span style="color: hotpink;">753 Sold</span>
+      </div>
+      <div class="price">IDR 270.000</div>
+      <div class="description">
+        <strong>Description</strong>
+        <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Quisque nec iaculis neque, malesuada aliquam est. Duis molestie dignissim leo quis aliquam. Proin mi mi, hendrerit at nibh in, laoreet tincidunt mauris. Cras vitae commodo odio, ut iaculis dolor. Vivamus feugiat enim sit amet justo volutpat mattis. Pellentesque id accumsan erat. Nunc sollicitudin ex eu diam egestas, vitae aliquam leo luctus. Vivamus sed euismod nisi. Proin venenatis nisl a justo molestie imperdiet. Aliquam sem sapien, bibendum nec nulla sodales, interdum tincidunt leo. </p>
+        <p></p>Curabitur dapibus dolor id maximus egestas. Pellentesque eu turpis libero. Donec arcu felis, ultricies vel maximus ullamcorper, vulputate ac augue. Orci varius natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Ut ut turpis velit. Donec sagittis, justo at mattis ullamcorper, justo metus lacinia tellus, in eleifend nibh lacus id velit. Suspendisse volutpat tincidunt odio, nec consequat quam lobortis at. Etiam ex diam, blandit ac consequat non, tristique quis enim. Aenean in mollis nisi, a faucibus justo. Vestibulum eleifend maximus sapien non aliquet. Orci varius natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus.</p>
+      </div>
+    </div>
+
+    <div class="order-box">
+      <h2>Order Details</h2>
+      <label for="qty">Quantity</label>
+      <input type="number" id="qty" value="1" min="1" />
+      <div class="options">
+        <label for="size">Size</label>
+        <label for="price">Price</label>
+        <label for="delivery">Delivery Fee</label>
+        <label for="discount">Discount</label>
+      </div>
+      <label for="location">Delivery Location</label>
+      <input type="text" id="location" />
+      <label for="notes">Notes</label>
+      <textarea id="notes" rows="3"></textarea>
+      <div class="subtotal">Subtotal: IDR -</div>
+      <button class="buy-now-btn">Buy Now</button>
+    </div>
+  </div>
+</div>
+
+ <footer class="bg-[#FF96B5] py-4">
+  <div class="max-w-6xl mx-auto text-sm text-white">
+    <div class="flex justify-between items-center">
+      <!-- Left Side: Logo and Copyright -->
+      <div class="flex items-center space-x-4 py-4">
+        <img src="assets/LOGO.png" alt="Jippy" class="w-[35px] h-[35px]">
+        <p class="mt-4 text-xs">© Jippy 2025 - All Rights Reserved</p>
+      </div>
+      
+      <!-- Right Side: Links -->
+      <div class="flex flex-col items-end space-y-3">
+        <!-- Main Links -->
+        <span class="flex gap-7 text-right text-md">
+          <a href="#" class="hover:underline cursor-pointer">Home</a>
+          <a href="#" class="hover:underline cursor-pointer">About Us</a>
+          <a href="#" class="hover:underline cursor-pointer">Contact Person</a>
+        </span>
+        
+        <!-- Secondary Links -->
+        <span class="flex gap-4 text-xs">
+          <p>Terms of Use</p>
+          <p>Privacy Policy</p>
+          <p>Agreement</p>
+        </span>
+      </div>
+    </div>
+</footer>
+  </div>
+</footer>
+  <script src="details.js"></script>
+        </body>
+</html>
+
