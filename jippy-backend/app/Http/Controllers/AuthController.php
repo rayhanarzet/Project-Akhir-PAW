@@ -30,37 +30,45 @@ class AuthController extends Controller
 
         $token = $user->createToken('auth_token')->plainTextToken;
 
+        $cookie = cookie('auth_token', $token, 60 * 24); 
+
         return response()->json([
             'message' => 'Hore! Register berhasil',
             'data' => $user,
             'token' => $token 
-        ], 201);
+        ], 201)->withCookie($cookie);;
     }
 
+
+    
     public function login(Request $request)
     {
     
         if (!Auth::attempt($request->only('email', 'password'))) {
-            return response()->json([
-                'message' => 'Waduh, Email atau Password salah bro'
-            ], 401);
+            return response()->json(['message' => 'Unauthorized'], 401);
         }
 
         $user = User::where('email', $request->email)->firstOrFail();
-
         $token = $user->createToken('auth_token')->plainTextToken;
 
+        $cookie = cookie('auth_token', $token, 60 * 24);
+        
         return response()->json([
             'message' => 'Login sukses!',
             'data' => $user,
             'token' => $token
-        ], 200);
+        ], 200)->withCookie($cookie);
     }
 
+
+    
     public function logout(Request $request)
     {
 
         $request->user()->currentAccessToken()->delete();
-        return response()->json(['message' => 'Logout berhasil']);
+
+        $cookie = cookie()->forget('auth_token');
+        
+        return response()->json(['message' => 'Logout berhasil'])->withCookie($cookie);
     }
 }
