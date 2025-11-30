@@ -163,6 +163,7 @@
     </div>
 
 
+    <!-- ⭐ FOOTER -->
     <footer class="bg-[#FF96B5] py-4 text-white mt-auto">
         <div class="max-w-6xl mx-auto flex justify-between items-center">
 
