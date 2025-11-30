@@ -1,0 +1,409 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+     <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+     <link href="style.css" rel="stylesheet">
+    <style>
+        /* Default tampilan input (belum dicentang) */
+        .container input {
+            appearance: none; /* hilangkan style browser */
+            width: 15px;
+            height: 15px;
+            border: 2px solid #ccc; /* warna abu default */
+            border-radius: 4px;
+            background-color: white;
+            display: inline-block;
+            position: relative;
+            cursor: pointer;
+            transition: all 0.2s ease-in-out;
+        }
+
+        /* Ubah warna saat dicentang */
+        .container input:checked {
+            border-color: #FF96B5;       /* ubah border jadi pink */
+        }
+
+        /* Tanda centang ✔ saat dicentang */
+        .container input:checked::after {
+            content: "";
+            position: absolute;
+            left: 4px;
+            top: 1px;
+            width: 4px;
+            height: 8px;
+            border: solid #FF96B5;
+            border-width: 0 2px 2px 0;
+            transform: rotate(45deg);
+        }
+
+
+        .range-slider {
+            -webkit-appearance: none;
+            height: 6px;
+            background: linear-gradient(to right, #FF96B5 0%, #FF96B5 50%, #e5e7eb 50%, #e5e7eb 100%);
+            border-radius: 5px;
+            outline: none;
+            transition:  background 450ms ease-in;
+        }
+
+        .range-slider::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            height: 16px;
+            width: 16px;
+            border-radius: 50%;
+            background: #FF96B5;
+            cursor: pointer;
+            border: 2px solid white;
+            box-shadow: 0 0 2px rgba(0, 0, 0, 0.3);
+            position: relative;
+            z-index: 2;
+        }
+
+        .range-slider::-moz-range-thumb {
+            height: 16px;
+            width: 16px;
+            border-radius: 50%;
+            background: #FF96B5;
+            cursor: pointer;
+            border: 2px solid white;
+        }   
+
+        .hidden {
+            display: none;
+        }
+
+        /* Overlay full page */
+        #loading-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(255, 255, 255, 0.9);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            z-index: 9999;
+            font-family: sans-serif;
+        }
+
+        /* Spinner */
+        .loader {
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid #FF96B5;
+            border-radius: 50%;
+            width: 45px;
+            height: 45px;
+            animation: spin 1s linear infinite;
+            margin-bottom: 16px;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+    </style>
+</head>
+
+<body>
+  <div id="loading-overlay">
+    <div class="loader"></div>
+    <p class="text-gray-600 text-sm mt-2">Tunggu sebentar ya...</p>
+</div>
+
+    <!-- Navbar -->
+ <header class="bg-white shadow">
+    <div class="max-w-7xl  mx-auto flex items-center justify-between p-4">
+      <img src="/frontend/assets/LOGO.png" alt="Jippy" class="w-[64px] h-[64px]">
+      <nav class="flex gap-10 items-center">
+        <a href="/frontend/menu.html" class="text-black font-medium cursor-pointer hover:bg-[#fff2c9] hover:text-black rounded-lg transition duration-300 px-4 py-1">Dashboard</a>
+        <a href="#" class="bg-[#FDE7A1] px-4 py-1 rounded-lg font-medium border border-black">Pre-Order</a>
+        <a href="/frontend/TrackOrder.html" class="text-black font-medium cursor-pointer hover:bg-[#fff2c9] hover:text-black rounded-lg transition duration-300 px-4 py-1">My Order</a>
+        <a href="/frontend/LiveChat.html" class="text-black font-medium cursor-pointer hover:bg-[#fff2c9] hover:text-black rounded-lg transition duration-300 px-4 py-1">Live Chat</a>
+      </nav>
+      <div class="flex gap-4 items-center">
+        <button><img src="/frontend/assets/notif.png" alt="Notifikasi" class="w-[22px]"></button>
+        <button><img src="/frontend/assets/profil.png" alt="Akun" class="w-[24px]"></button>
+      </div>
+    </div>
+  </header>
+    <!-- ENd Navbar -->
+
+    <!-- Header + Search -->
+    <section class="flex items-center justify-between  py-6 max-w-6xl mx-auto">
+        <h1 class="text-2xl font-bold">Produk Pre-Order</h1>
+        <div class="relative w-5/7">
+        <input
+    id="searchInput"
+    type="search"
+    placeholder="Cari Produk"
+    class="w-full h-10 rounded-lg border border-gray-300
+    pl-10 pr-10 text-sm placeholder-gray-400
+    focus:outline-none focus:ring-2 focus:ring-pink-400"
+/>
+
+        <!-- icon search -->
+        <svg xmlns="http://www.w3.org/2000/svg"
+            class="h-5 w-5 text-gray-400 absolute left-3 top-1/2 transform -translate-y-1/2"
+            fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                d="M21 21l-4.35-4.35M10 18a8 8 0 100-16 8 8 0 000 16z" />
+        </svg>
+        </div>
+    </section>
+
+    <!-- Main Content: Sidebar + Grid -->
+    <section class="flex pb-10 max-w-6xl mx-auto justify-between ">
+        <!-- Sidebar Filters -->
+        <aside class="w-64 space-y-6" id="preorder.html">
+        <!-- Jenis Pre-Order -->
+        <div class="bg-white rounded-lg border border-[#706E6E] p-4">
+
+            </label>
+            <h3 class="text-black font-semibold text-xl mb-3 mt-1">Kategori</h3>
+            <label class="flex items-center mb-2 container text-sm">
+                <input type="checkbox" class="form-checkbox text-green-800  category-checkbox checkbox mr-2" data-category="Korean Beauty">
+                <span class="checkmark"></span>
+                Korean Beauty
+            </label>
+            <label class="flex items-center mb-2 container text-sm">
+                <input type="checkbox" class="form-checkbox text-green-800  category-checkbox checkbox mr-2" data-category="Korean Fashion">
+                <span class="checkmark"></span>
+                Korean Fashion
+            </label>
+            <label class="flex items-center mb-2 container text-sm">
+                <input type="checkbox" class="form-checkbox text-green-800  category-checkbox checkbox mr-2" data-category="Korean Food">
+                <span class="checkmark"></span>
+                Korean Food
+            </label>
+            <label class="flex items-center mb-2 container text-sm">
+                <input type="checkbox" class="form-checkbox text-green-800  category-checkbox checkbox mr-2" data-category="KPOP Merchandise">
+                <span class="checkmark"></span>
+                KPOP Merchandise
+            </label>
+
+            <h3 class="text-black font-semibold text-xl mb-1 mt-7">Pilih Harga Maksimum</h3>
+
+            <input type="range" id="priceRange" min="50000" max="1000000" step="5000" value="1000000"
+                class="w-full  range-slider">
+            <div class="flex justify-end text-sm text-gray-600 mt-2">
+            <span>Max: <span id="priceValue">Rp 1000.000</span></span>
+            </div>
+
+
+            </div>
+            
+        </div>
+        <!-- Cara Pre-Order -->
+        <div class="bg-[#FFE8EF] p-4 rounded-lg relative mt-10">
+            <div class="flex relative top-[-30px] left-[-30px]">
+            <img src="/frontend/assets/icon.png" class="w-fit">
+            <div class="bg-[#E2F8FF] absolute left-10 py-2 px-3 rounded-full font-bold">Cara Pre-Order</div>
+            </div>
+            <ul class="space-y-4 space-x-0 text-gray-800 text-xs relative top-[-15px] ">
+            <li class="flex items-start"><span class="text-lg leading-none text-[#B29FFF] mr-2">✿</span>Pilih produk yang kamu inginkan</li>
+            <li class="flex items-start"><span class="text-lg leading-none text-[#B29FFF] mr-2">✿</span>Pilih variasi dan jumlah produk</li>
+            <li class="flex items-start"><span class="text-lg leading-none text-[#B29FFF] mr-2">✿</span>Klik tombol “Pre-Order Sekarang”</li>
+            <li class="flex items-start"><span class="text-lg leading-none text-[#B29FFF] mr-2">✿</span>Isi detail pengiriman</li>
+            <li class="flex items-start"><span class="text-lg leading-none text-[#B29FFF] mr-2">✿</span>Pilih metode pembayaran dan klik “Bayar Sekarang”</li>
+            <li class="flex items-start"><span class="text-lg leading-none text-[#B29FFF] mr-2">✿</span>Lakukan pembayaran</li>
+            <li class="flex items-start"><span class="text-lg leading-none text-[#B29FFF] mr-2">✿</span>Lacak pesanan melalui menu “My Order”</li>
+            </ul>
+        </div>
+        </aside>
+
+        <!-- Grid Produk -->
+    <main id="product-list"
+      class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-10 pb-10">
+    </main>
+
+    </section>
+
+    <!--Footer-->
+    <footer class="bg-[#FF96B5] py-4">
+    <div class="max-w-6xl container mx-auto text-sm text-white">
+      <div class="flex justify-between items-center">
+        <div class="flex item-center py-4 space-x-4">
+            <img src="/frontend/assets/LOGO.png" alt="Jippy" class="w-[35px] h-[35px]">
+            <p class="mt-4 text-xs">© Jippy 2025 - All Rights Reserved</p>
+        </div>
+        <div class="flex flex-col items-end space-y-3">
+            <span class="flex gap-7 text-right text-md">
+                <a href="#" class="hover:underline cursor-pointer">Home</a>
+                <a href="#" class="hover:underline cursor-pointer">About Us</a>
+                <a href="#" class="hover:underline cursor-pointer">Contact Person</a>
+            </span>
+            <span class="flex gap-4 text-xs">
+                <p>Terms of Use</p>
+                <p>Privacy Policy</p>
+                <p>Agreement</p>
+            </span>
+        </div>
+      </div>
+    </div>
+  </footer>
+<script>
+/* ============================================================
+   FETCH PRODUK + GENERATE CARD
+   ============================================================ */
+const overlay = document.getElementById("loading-overlay");
+const container = document.getElementById("product-list");
+
+let allProducts = []; // simpan semua produk
+let filteredProducts = []; // produk setelah difilter
+
+fetch("http://127.0.0.1:8000/api/preorder")
+  .then(res => res.json())
+  .then(data => {
+    overlay.style.display = "none";
+
+    allProducts = data;
+    filteredProducts = data;
+    renderProducts(filteredProducts);
+  })
+  .catch(err => console.error("ERROR FETCH:", err));
+
+
+
+/* ============================================================
+   RENDER PRODUK KE GRID
+   ============================================================ */
+function renderProducts(list) {
+  container.innerHTML = "";
+
+  list.forEach(p => {
+    container.innerHTML += `
+<article 
+  class="w-[249px] h-[330px] bg-white rounded-lg shadow-md overflow-hidden flex flex-col border border-[#BCBCBC] product-card cursor-pointer transition-transform duration-300 hover:shadow-lg hover:-translate-y-1"
+  data-category="${p.category}"
+  data-price="${p.price}"
+  onclick="window.location.href='detailpo.html?id=${p.id}'"
+>
+    <img 
+        src="/uploads/products/${p.image}" 
+        alt="${p.name}"
+        class="w-10/12 mx-auto mt-4 h-40 object-cover rounded-lg"
+    />
+
+    <div class="px-4 pt-2 pb-4 flex-1 flex flex-col">
+        <h3 class="text-lg font-semibold mt-1">${p.name}</h3>
+        <p class="text-xs text-[#36A9FF] mt-1">${p.category}</p>
+
+        <p class="text-[13px] font-semibold text-[#FF92BF] mt-4 mb-4 italic">
+            Close PO: ${p.close_po_date}
+        </p>
+
+        <p class="text-lg font-semibold text-[#FF378A] mt-auto text-right">
+            Rp ${p.price.toLocaleString("id-ID")}
+        </p>
+    </div>
+</article>
+    `;
+  });
+}
+
+
+
+/* ============================================================
+   FILTER KATEGORI
+   ============================================================ */
+const checkboxes = document.querySelectorAll(".category-checkbox");
+
+checkboxes.forEach(cb => {
+  cb.addEventListener("change", applyFilters);
+});
+
+
+
+/* ============================================================
+   FILTER HARGA
+   ============================================================ */
+const priceRange = document.getElementById("priceRange");
+const priceValue = document.getElementById("priceValue");
+const searchInput = document.getElementById("searchInput");
+
+searchInput.addEventListener("input", () => {
+  applyFilters();
+});
+
+
+// slider warna
+function setSliderBackground(slider) {
+  const min = slider.min;
+  const max = slider.max;
+  const val = slider.value;
+  const percent = ((val - min) / (max - min)) * 100;
+
+  slider.style.background = `linear-gradient(to right, #FF96B5 0%, #FF96B5 ${percent}%, #e5e7eb ${percent}%, #e5e7eb 100%)`;
+}
+
+// format Rp
+function formatRupiah(num) {
+  return "Rp " + num.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".");
+}
+
+// inisialisasi slider
+setSliderBackground(priceRange);
+priceValue.textContent = formatRupiah(priceRange.value);
+
+priceRange.addEventListener("input", () => {
+  setSliderBackground(priceRange);
+  priceValue.textContent = formatRupiah(priceRange.value);
+  applyFilters();
+});
+
+
+
+/* ============================================================
+   APPLY FILTERS (kategori + harga)
+   ============================================================ */
+function applyFilters() {
+  const selectedCategories = Array.from(checkboxes)
+    .filter(cb => cb.checked)
+    .map(cb => cb.getAttribute("data-category"));
+
+  const maxPrice = parseInt(priceRange.value);
+  const searchQuery = searchInput.value.toLowerCase();
+
+  filteredProducts = allProducts.filter(prod => {
+    const categoryMatch =
+      selectedCategories.length === 0 ||
+      selectedCategories.includes(prod.category);
+
+    const priceMatch = prod.price <= maxPrice;
+
+    const searchMatch =
+      prod.name.toLowerCase().includes(searchQuery);
+
+    return categoryMatch && priceMatch && searchMatch;
+  });
+
+  renderProducts(filteredProducts);
+}
+
+
+
+
+/* ============================================================
+   OPTIONAL — SEARCH FILTER (kalau mau aktifkan)
+   ============================================================ */
+/*
+const searchInput = document.querySelector("input[type='search']");
+
+searchInput.addEventListener("input", () => {
+  const q = searchInput.value.toLowerCase();
+
+  const results = filteredProducts.filter(p =>
+    p.name.toLowerCase().includes(q)
+  );
+
+  renderProducts(results);
+});
+*/
+</script>
+
+
+</body>
+</html>

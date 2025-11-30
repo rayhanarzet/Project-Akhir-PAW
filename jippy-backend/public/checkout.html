@@ -1,0 +1,323 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <title>Checkout - Jippy</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <style>
+        /* LOADING SPINNER */
+        #loading-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(255, 255, 255, 0.95);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            z-index: 9999;
+        }
+
+        .loader {
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid #FF96B5;
+            border-radius: 50%;
+            width: 45px;
+            height: 45px;
+            animation: spin 1s linear infinite;
+            margin-bottom: 12px;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+    </style>
+</head>
+
+<body class="bg-white font-sans text-gray-800">
+
+<!-- ================= LOADING ================= -->
+<div id="loading-overlay">
+    <div class="loader"></div>
+    <p class="text-gray-600 text-sm">Tunggu sebentar ya...</p>
+</div>
+
+<!-- NAVBAR -->
+ <header class="bg-white shadow">
+    <div class="max-w-7xl  mx-auto flex items-center justify-between p-4">
+      <img src="/frontend/assets/LOGO.png" alt="Jippy" class="w-[64px] h-[64px]">
+      <nav class="flex gap-10 items-center">
+        <a href="/frontend/menu.html" class="text-black font-medium cursor-pointer hover:bg-[#fff2c9] hover:text-black rounded-lg transition duration-300 px-4 py-1">Dashboard</a>
+        <a href="#" class="bg-[#FDE7A1] px-4 py-1 rounded-lg font-medium border border-black">Pre-Order</a>
+        <a href="/frontend/TrackOrder.html" class="text-black font-medium cursor-pointer hover:bg-[#fff2c9] hover:text-black rounded-lg transition duration-300 px-4 py-1">My Order</a>
+        <a href="/frontend/LiveChat.html" class="text-black font-medium cursor-pointer hover:bg-[#fff2c9] hover:text-black rounded-lg transition duration-300 px-4 py-1">Live Chat</a>
+      </nav>
+      <div class="flex gap-4 items-center">
+        <button><img src="/frontend/assets/notif.png" alt="Notifikasi" class="w-[22px]"></button>
+        <button><img src="/frontend/assets/profil.png" alt="Akun" class="w-[24px]"></button>
+      </div>
+    </div>
+  </header>
+
+<!-- Breadcrumb -->
+<div class="max-w-6xl mx-auto px-4 py-4 text-black text-sm">
+    <a href="preorder.html" class="hover:text-pink-400">Pre-Order</a> >
+    <a href="javascript:history.back()" class="hover:text-pink-400">Detail Produk</a> >
+    <span class="font-semibold">Checkout</span>
+</div>
+
+<!-- TITLE -->
+<h1 class="text-center text-2xl font-bold mt-4">Checkout</h1>
+
+<!-- MAIN -->
+<div class="max-w-6xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-8 mt-6">
+
+    <!-- LEFT – Rincian Pesanan -->
+    <div class="bg-[#FFE8EF] rounded-xl p-6 border border-[#FFC6D5]">
+        <h2 class="font-bold text-lg mb-6 mt-2 flex items-center gap-2">
+            <span>📦</span> Rincian Pesanan
+        </h2>
+
+        <div class="bg-white p-4 rounded-xl border">
+            <div class="flex gap-4">
+                <img id="checkout-image" class="w-28 h-28 rounded-lg border object-cover">
+
+                <div class="flex-1">
+                    <h3 id="checkout-name" class="font-bold text-lg"></h3>
+
+                    <!-- VARIASI -->
+                    <p id="checkout-variation" class="text-sm text-gray-700 mt-1 border w-fit px-2 py-[2px] rounded">
+                        Variasi: -
+                    </p>
+
+                    <p id="checkout-closepo" class="text-sm text-pink-600 mt-3"></p>
+                </div>
+            </div>
+
+            <!-- Quantity -->
+            <div class="mt-5 flex items-center justify-between">
+                <p>Jumlah:</p>
+                <div class="flex items-center gap-3">
+                    <button id="minus-btn" class="w-8 h-8 bg-white border rounded text-lg">−</button>
+                    <span id="qty" class="font-semibold">1</span>
+                    <button id="plus-btn" class="w-8 h-8 bg-white border rounded text-lg">+</button>
+                </div>
+
+                <div class="text-right">
+                    <p class="text-sm text-gray-600">Harga per item</p>
+                    <p id="price" class="font-bold text-pink-600"></p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Price Detail -->
+        <div class="mt-6 bg-white p-4 rounded-xl border">
+            <div class="flex justify-between text-sm mb-2">
+                <p>Subtotal</p>
+                <p id="subtotal">Rp 0</p>
+            </div>
+
+            <div class="flex justify-between text-sm mb-2">
+                <p>Biaya admin</p>
+                <p>Rp 5.000</p>
+            </div>
+
+            <div class="flex justify-between text-sm">
+                <p>Biaya Pengiriman</p>
+                <p>Rp 25.000</p>
+            </div>
+
+            <hr class="my-3">
+
+            <div class="flex justify-between font-bold text-lg">
+                <p>Total</p>
+                <p id="total" class="text-pink-600">Rp 0</p>
+            </div>
+        </div>
+
+        <div class="bg-[#FFF3F7] text-sm p-3 rounded-xl mt-6 border">
+            <p>📮 Estimasi Pengiriman</p>
+            <p class="text-gray-600 text-sm mt-3 ml-5">15–20 hari kerja setelah PO ditutup</p>
+        </div>
+    </div>
+
+    <!-- RIGHT – Shipping -->
+    <div class="space-y-6">
+
+        <!-- Shipping Information -->
+        <div class="bg-[#FFE8EF] p-6 rounded-xl border">
+            <h2 class="font-bold text-lg mb-4 flex items-center gap-2">📍 Detail Pengiriman</h2>
+
+            <label class="text-sm mb-3 block">Nama Lengkap</label>
+            <input id="ship-name" type="text" class="w-full border rounded p-2 text-sm mb-3" placeholder="Masukkan nama lengkap">
+
+            <label class="text-sm mb-3 block">Nomor Telepon</label>
+            <input id="ship-phone" type="text" class="w-full border rounded p-2 text-sm mb-3" placeholder="08xxxxxxxx">
+
+            <label class="text-sm mb-3 block">Alamat Pengiriman</label>
+            <textarea id="ship-address" class="w-full border rounded p-2 text-sm mb-3" placeholder="Masukkan alamat lengkap"></textarea>
+
+            <label class="text-sm mb-3 block">Catatan (Optional)</label>
+            <textarea id="ship-note" class="w-full border rounded p-2 text-sm mb-3" placeholder="Catatan untuk pesanan"></textarea>
+        </div>
+
+
+        </div>
+    </div>
+</div>
+
+<!-- BUTTON -->
+<div class="flex justify-center mt-10 mb-20">
+    <button id="pay-btn" class="bg-[#F65C89] text-white px-12 py-3 rounded-full font-semibold hover:bg-[#FAABC2]">
+        Bayar Sekarang
+    </button>
+</div>
+
+<!-- FOOTER -->
+<footer class="bg-[#FF96B5] py-4">
+    <div class="max-w-6xl container mx-auto text-sm text-white">
+      <div class="flex justify-between items-center">
+        <div class="flex item-center py-4 space-x-4">
+            <img src="/frontend/assets/LOGO.png" alt="Jippy" class="w-[35px] h-[35px]">
+            <p class="mt-4 text-xs">© Jippy 2025 - All Rights Reserved</p>
+        </div>
+        <div class="flex flex-col items-end space-y-3">
+            <span class="flex gap-7 text-right text-md">
+                <a href="#" class="hover:underline cursor-pointer">Home</a>
+                <a href="#" class="hover:underline cursor-pointer">About Us</a>
+                <a href="#" class="hover:underline cursor-pointer">Contact Person</a>
+            </span>
+            <span class="flex gap-4 text-xs">
+                <p>Terms of Use</p>
+                <p>Privacy Policy</p>
+                <p>Agreement</p>
+            </span>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+<!-- MIDTRANS SNAP -->
+<script 
+    type="text/javascript"
+    src="https://app.sandbox.midtrans.com/snap/snap.js"
+    data-client-key="Mid-client-78zFNz_sO6aycR-B">
+</script>
+
+<!-- SCRIPT -->
+<script>
+let pricePerItem = 0;
+let qty = 1;
+
+// AMBIL PARAMETER URL
+const params = new URLSearchParams(window.location.search);
+const id = params.get("id");
+qty = parseInt(params.get("qty") || 1);
+const variation = params.get("variasi");
+
+document.getElementById("qty").textContent = qty;
+document.getElementById("checkout-variation").textContent = "Variasi: " + variation;
+
+// FETCH PRODUK
+fetch(`http://127.0.0.1:8000/api/preorder/${id}`)
+    .then(res => res.json())
+    .then(p => {
+
+        /* HILANGKAN LOADING SETELAH PRODUK TERTAMPIL */
+        document.getElementById("loading-overlay").style.display = "none";
+
+        document.getElementById("checkout-name").textContent = p.name;
+        document.getElementById("price").textContent = "Rp " + p.price.toLocaleString("id-ID");
+        document.getElementById("checkout-image").src = "/uploads/products/" + p.image; 
+        document.getElementById("checkout-closepo").textContent = "Close PO: " + p.close_po_date;
+
+        pricePerItem = p.price;
+        updateTotal();
+    });
+
+function updateTotal() {
+    document.getElementById("qty").textContent = qty;
+
+    const subtotal = pricePerItem * qty;
+    const admin = 5000;
+    const shipping = 25000;
+    const total = subtotal + admin + shipping;
+
+    document.getElementById("subtotal").textContent = "Rp " + subtotal.toLocaleString("id-ID");
+    document.getElementById("total").textContent = "Rp " + total.toLocaleString("id-ID");
+}
+
+// PLUS MINUS
+document.getElementById("plus-btn").onclick = () => { qty++; updateTotal(); };
+document.getElementById("minus-btn").onclick = () => { if(qty>1) qty--; updateTotal(); };
+
+// === HANDLE PEMBAYARAN MIDTRANS ===
+document.getElementById("pay-btn").addEventListener("click", function () {
+
+    const name = document.getElementById("ship-name").value;
+    const phone = document.getElementById("ship-phone").value;
+    const address = document.getElementById("ship-address").value;
+    const note = document.getElementById("ship-note").value;
+
+    // VALIDASI WAJIB
+    if (!name || !phone || !address) {
+        alert("Nama, nomor telepon, dan alamat wajib diisi!");
+        return;
+    }
+
+    const payload = {
+        product_id: id,
+        quantity: qty,
+        variation: variation,
+        customer_name: name,
+        customer_phone: phone,
+        customer_address: address,
+        customer_note: note
+    };
+
+
+    fetch("http://127.0.0.1:8000/api/checkout", {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json",
+            "Accept": "application/json"
+        },
+        body: JSON.stringify(payload)
+    })
+
+    .then(res => res.json())
+    .then(res => {
+        console.log("TOKEN MIDTRANS:", res.token);
+
+        snap.pay(res.token, {
+            onSuccess: function(result){
+                alert("Pembayaran Berhasil!");
+                window.location.href = "/frontend/TrackOrder.html?paid=true&order_id=" + result.order_id;
+            },
+
+            onPending: function(result){
+                alert("Menunggu Pembayaran...");
+                window.location.href = "/frontend/TrackOrder.html?pending=true&order_id=" + result.order_id;
+            },
+
+            onError: function(result){
+                alert("Pembayaran gagal!");
+            },
+
+            onClose: function(){
+                alert("Anda menutup pembayaran sebelum selesai.");
+            }
+        });
+
+    })
+    .catch(err => {
+        console.error("Checkout Error:", err);
+        alert("Terjadi kesalahan saat membuat transaksi.");
+    });
+
+});
+</script>
+
+</body>
+</html>

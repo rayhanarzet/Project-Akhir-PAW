@@ -1,0 +1,320 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Live Chat - JIPPY</title>
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+     <link href="style.css" rel="stylesheet">
+    <style>
+        :root {
+            --chat-bg: #ffdbe8;
+            --bubble-bg: #ffffff;
+            --border-color: #000000;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            margin: 0;
+            background-color: #ffffff;
+        }
+
+        .chat-title {
+            text-align: center;
+            margin-top: 25px;
+            font-size: 22px;
+            font-weight: 700;
+        }
+
+        /* CHAT BOX MINI */
+        .chat-box {
+            width: 60%;
+            max-width: 520px;
+            margin: 20px auto 40px auto;
+            background-color: var(--chat-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 25px;
+            padding: 15px;
+            min-height: 60vh;
+
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* HEADER */
+        .chat-header {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .chat-user-info img {
+            width: 38px;
+            height: 38px;
+            border-radius: 50%;
+        }
+
+        .chat-user-info strong { font-size: 13px; }
+        .chat-user-info small { font-size: 10px; }
+
+        .divider {
+            border-top: 1px solid #000;
+            margin: 8px 0 5px 0;
+        }
+
+       .role-info {
+    font-size: 12px;
+    color: #555;
+    margin-bottom: 8px;
+margin-top: 8px;
+    text-align: center;        /* Bikin ke tengah */
+    width: 100%;               /* Biar pas ke tengah */
+    display: block;            /* Pastikan jadi block */
+}
+
+
+        /* MESSAGES AREA (mini) */
+        .messages {
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+            gap: 0.30rem;
+            padding-right: 6px;
+            padding-bottom: 0.5rem;
+            overflow-y: auto;
+        }
+
+        .message-wrapper {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .message-wrapper.sent {
+            align-items: flex-end;
+        }
+
+        .message-wrapper.received {
+            align-items: flex-start;
+        }
+
+        /* BUBBLE MINI */
+        .message-bubble {
+            max-width: 62%;
+            padding: 0.45rem 0.8rem;
+            border-radius: 16px;
+            border: 1px solid var(--border-color);
+            background-color: var(--bubble-bg);
+
+            font-size: 0.70rem;
+            font-weight: 600;
+            line-height: 1.15;
+
+            word-wrap: break-word;
+            white-space: normal;
+            overflow-wrap: break-word;
+        }
+
+        /* INPUT AREA MINI */
+        .chat-input-area {
+            display: flex;
+            align-items: center;
+            gap: 0.7rem;
+            padding-top: 0.7rem;
+            border-top: 1px solid var(--border-color);
+            margin-top: 0.7rem;
+        }
+
+        .message-input {
+            flex-grow: 1;
+        }
+
+        .message-input input {
+            width: 100%;
+            padding: 0.6rem 1rem;
+            border-radius: 20px;
+            border: 1px solid var(--border-color);
+            font-size: 0.75rem;
+        }
+
+        /* SEND BUTTON MINI */
+        .send-button {
+    width: 50px;          /* lebih lebar */
+    height: 50px;         /* lebih tinggi */
+    border-radius: 50%;
+    background: #ffffff;
+    border: 1px solid var(--border-color);
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    cursor: pointer;
+    font-size: 14px;       /* tulisan lebih besar */
+    font-weight: 700;
+}
+
+    </style>
+</head>
+<body>
+
+    <!-- HEADER -->
+<header class="bg-white shadow">
+    <div class="max-w-7xl mx-auto flex items-center justify-between p-4">
+      
+      <!-- Logo -->
+      <img src="/frontend/assets/LOGO.png" alt="Jippy" class="w-16 h-16">
+
+      <!-- NAVIGATION -->
+      <nav class="flex gap-10 items-center">
+        <a href="/frontend/menu.html"
+           class="text-black font-medium cursor-pointer hover:bg-[#fff2c9] hover:text-black rounded-lg transition duration-300 px-4 py-1">
+           Dashboard
+        </a>
+
+        <a href="/preorder.html"
+           class="text-black font-medium cursor-pointer hover:bg-[#fff2c9] hover:text-black rounded-lg transition duration-300 px-4 py-1">
+           Pre-Order
+        </a>
+
+        <a href="/frontend/TrackOrder.html"
+           class="text-black font-medium cursor-pointer hover:bg-[#fff2c9] hover:text-black rounded-lg transition duration-300 px-4 py-1">
+           My Order
+        </a>
+
+        <a href="/frontend/LiveChat.html"
+           class="bg-[#FDE7A1] px-4 py-1 rounded-lg font-medium border border-black">
+           Live Chat
+        </a>
+      </nav>
+
+      <!-- Icons -->
+      <div class="flex gap-4 items-center">
+        <button>
+          <img src="/frontend/assets/notif.png" alt="Notifikasi" class="w-[22px]">
+        </button>
+        <button>
+          <img src="/frontend/assets/profil.png" alt="Akun" class="w-6">
+        </button>
+      </div>
+
+    </div>
+</header>
+
+
+    <!-- MAIN -->
+    <main>
+        <h2 class="chat-title">Live Chat</h2>
+
+        <section class="chat-box">
+
+            <!-- CHAT HEADER -->
+            <div class="chat-header">
+                <div class="chat-user-info flex items-center gap-2">
+                    <img src="assets/Jippy Chan.svg">
+                    <div>
+                        <strong>Jippy Chan</strong><br>
+                        <small>Online</small>
+                    </div>
+                </div>
+            </div>
+
+            <div class="divider"></div>
+            <div id="roleInfo" class="role-info"></div>
+
+            <!-- MESSAGES -->
+            <div class="messages" id="messages"></div>
+
+            <!-- INPUT -->
+            <div class="chat-input-area">
+                <div class="message-input">
+                    <input type="text" id="textInput" placeholder="Ketik disini...">
+                </div>
+                <div class="send-button" id="sendBtn">Kirim</div>
+            </div>
+
+        </section>
+    </main>
+
+    <!-- FOOTER -->
+    <footer class="bg-[#FF96B5] py-4">
+    <div class="max-w-6xl container mx-auto text-sm text-white">
+      <div class="flex justify-between items-center">
+        <div class="flex item-center py-4 space-x-4">
+            <img src="/frontend/assets/LOGO.png" alt="Jippy" class="w-[35px] h-[35px]">
+            <p class="mt-4 text-xs">© Jippy 2025 - All Rights Reserved</p>
+        </div>
+        <div class="flex flex-col items-end space-y-3">
+            <span class="flex gap-7 text-right text-md">
+                <a href="#" class="hover:underline cursor-pointer">Home</a>
+                <a href="#" class="hover:underline cursor-pointer">About Us</a>
+                <a href="#" class="hover:underline cursor-pointer">Contact Person</a>
+            </span>
+            <span class="flex gap-4 text-xs">
+                <p>Terms of Use</p>
+                <p>Privacy Policy</p>
+                <p>Agreement</p>
+            </span>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+    <!-- CHAT SCRIPT -->
+    <script>
+        const messagesDiv = document.getElementById("messages");
+        const input = document.getElementById("textInput");
+        const sendBtn = document.getElementById("sendBtn");
+        const roleInfo = document.getElementById("roleInfo");
+
+        const params = new URLSearchParams(window.location.search);
+        const urlRole = params.get("role");
+
+        const SENDER = (urlRole === "seller") ? "admin" : "user";
+        roleInfo.textContent = (SENDER === "admin")
+            ? "Anda sebagai Penjual (Admin)"
+            : "Anda sebagai Customer";
+
+        async function fetchMessages() {
+            const res = await fetch("/api/livechat/messages");
+            const data = await res.json();
+
+            messagesDiv.innerHTML = "";
+
+            data.forEach(msg => {
+                const wrap = document.createElement("div");
+                wrap.className = "message-wrapper " + (msg.sender === SENDER ? "sent" : "received");
+
+                const bubble = document.createElement("div");
+                bubble.className = "message-bubble";
+                bubble.textContent = msg.message;
+
+                wrap.appendChild(bubble);
+                messagesDiv.appendChild(wrap);
+            });
+
+            messagesDiv.scrollTop = messagesDiv.scrollHeight;
+        }
+
+        async function sendText() {
+            const text = input.value.trim();
+            if (!text) return;
+
+            await fetch("/api/livechat/send", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ message: text, sender: SENDER })
+            });
+
+            input.value = "";
+            fetchMessages();
+        }
+
+        sendBtn.addEventListener("click", sendText);
+        input.addEventListener("keypress", e => { if (e.key === "Enter") sendText(); });
+
+        fetchMessages();
+        setInterval(fetchMessages, 1500);
+    </script>
+
+</body>
+</html>
