@@ -14,7 +14,6 @@
 
 <div class="min-h-screen flex flex-col">
 
-    <!-- ⭐ HEADER -->
     <header class="bg-white shadow">
         <div class="max-w-7xl mx-auto flex items-center justify-between p-4">
 
@@ -35,7 +34,6 @@
         </div>
     </header>
 
-    <!-- ⭐ SEARCH BAR -->
     <div class="max-w-7xl mx-auto my-6 flex justify-end">
         <div class="relative">
             <input 
@@ -47,7 +45,6 @@
         </div>
     </div>
 
-    <!-- ⭐ BANNER (BUTTON CENTER TURUN) -->
     <div class="max-w-7xl mx-auto px-4 mt-6">
         <div class="relative w-full">
             
@@ -65,10 +62,8 @@
         </div>
     </div>
 
-    <!-- ⭐ CATEGORIES (HOVER GAMBAR SAJA) -->
     <div class="max-w-7xl mx-auto my-12 grid grid-cols-2 sm:grid-cols-4 gap-8 text-center">
 
-        <!-- Korean Beauty -->
         <a href="/products?category=1" class="block">
             <div class="w-full">
                 <img src="{{ asset('assets/beauty-category.png') }}" 
@@ -77,7 +72,6 @@
             <div class="font-semibold mt-2">Korean Beauty</div>
         </a>
 
-        <!-- Korean Fashion -->
         <a href="/products?category=2" class="block">
             <div class="w-full">
                 <img src="{{ asset('assets/koreanfashion-category.png') }}" 
@@ -86,7 +80,6 @@
             <div class="font-semibold mt-2">Korean Fashion</div>
         </a>
 
-        <!-- K-Pop Merch -->
         <a href="/products?category=3" class="block">
             <div class="w-full">
                 <img src="{{ asset('assets/kpop-category.png') }}" 
@@ -95,7 +88,6 @@
             <div class="font-semibold mt-2">K-Pop Merch</div>
         </a>
 
-        <!-- Korean Food -->
         <a href="/products?category=4" class="block">
             <div class="w-full">
                 <img src="{{ asset('assets/koreanfood-category.png') }}" 
@@ -106,12 +98,10 @@
 
     </div>
 
-    <!-- ⭐ NEW BEAUTIES -->
     <div class="max-w-7xl mx-auto my-10">
         <img src="{{ asset('assets/new-beauties.svg') }}" class="mx-auto">
     </div>
 
-    <!-- ⭐ FOOTER -->
     <footer class="bg-[#FF96B5] py-6 mt-auto">
         <div class="max-w-6xl mx-auto text-sm text-white flex justify-between items-center">
 

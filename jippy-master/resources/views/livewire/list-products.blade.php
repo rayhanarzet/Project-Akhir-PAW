@@ -6,10 +6,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Products – Jippy</title>
 
-    <!-- Tailwind -->
     <script src="https://cdn.tailwindcss.com"></script>
 
-    <!-- Custom CSS -->
     <link rel="stylesheet" href="{{ asset('menu.css') }}">
 
     @livewireStyles
@@ -19,7 +17,6 @@
 
 <div class="min-h-screen flex flex-col">
 
-    <!-- ⭐ HEADER -->
     <header class="bg-white shadow">
         <div class="max-w-7xl mx-auto flex items-center justify-between p-4">
 
@@ -43,7 +40,6 @@
     </header>
 
 
-    <!-- ⭐ SEARCH BAR -->
     <div class="max-w-7xl mx-auto px-4 py-4">
         <div class="relative">
             <input 
@@ -57,10 +53,8 @@
     </div>
 
 
-    <!-- ⭐ MAIN CONTENT -->
     <div class="flex-1">
 
-        <!-- Category Title -->
         <div class="max-w-7xl mx-auto px-4 py-6">
             <h1 class="text-2xl font-bold">
                 @if(request('category'))
@@ -72,16 +66,14 @@
         </div>
 
 
-        <!-- ⭐ CONTENT SPACE -->
         <div class="max-w-7xl mx-auto px-4 pb-12 flex gap-6">
 
-            <!-- ⭐ SIDEBAR -->
+
             <div class="w-64 shrink-0">
                 <div class="border rounded-lg p-4 sticky top-24">
 
                     <h3 class="font-bold text-lg mb-4">Categories</h3>
 
-                    <!-- ALL PRODUCTS -->
                     <a 
                         href="/products"
                         class="block w-full text-left px-3 py-2 rounded-lg mb-2 transition
@@ -91,7 +83,6 @@
                         All Products
                     </a>
 
-                    <!-- CATEGORY LIST -->
                     @foreach($categories as $category)
                         <a 
                             href="/products?category={{ $category->id }}"
@@ -109,7 +100,6 @@
             </div>
 
 
-            <!-- ⭐ PRODUCTS LIST -->
             <div class="flex-1">
 
                 @if ($products->count())
@@ -173,7 +163,6 @@
     </div>
 
 
-    <!-- ⭐ FOOTER -->
     <footer class="bg-[#FF96B5] py-4 text-white mt-auto">
         <div class="max-w-6xl mx-auto flex justify-between items-center">
 
