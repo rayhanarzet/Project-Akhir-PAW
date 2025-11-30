@@ -1,0 +1,262 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Segoe UI', sans-serif;
+}
+
+body {
+    background-color: #fff;
+    color: #333;
+    line-height: 1.6;
+    border: none;
+}
+
+.navbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px 32px;
+  background: #fff;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.03);
+}
+
+/* Tambahkan flex container untuk kanan */
+.navbar-right {
+  display: flex;
+  align-items: center;
+  margin-left: auto;
+  gap: 24px;
+}
+
+.navbar .logo {
+    margin-right: 24px;
+}
+
+.navbar .logo img {
+    height: 48px;
+}
+
+.navbar .nav-links {
+  display: flex;
+  gap: 36px;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.navbar .nav-links li a {
+  text-decoration: none;
+  color: #222;
+  font-weight: bold;
+  font-size: 20px;
+  transition: color 0.2s;
+}
+
+.navbar .nav-links li a:hover {
+  color: #2196f3;
+}
+
+.btn-signup {
+  padding: 6px 22px;
+  background: #21a6e3;
+  color: #fff;
+  font-weight: bold;
+  font-size: 18px;
+  border: none;
+  border-radius: 8px;
+  text-decoration: none;
+  transition: background 0.2s;
+  cursor: pointer;
+  display: inline-block;
+}
+
+.btn-signup:hover {
+  background: #1789c7;
+}
+
+/* --- HERO SECTION --- */
+.hero {
+    background: linear-gradient(
+        to bottom,
+        #fff 0%,
+        #ffe6f0 80%,
+        #ffe6f0 100%
+    );
+    min-height: 370px;
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    position: relative;
+    width: 100%;
+    border-bottom: none; 
+    overflow: hidden;
+}
+
+.hero-content {
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    width: 100%;
+    max-width: 1440px;
+    margin: 0 auto;
+    height: 100%;
+    position: relative;
+}
+
+.hero-text {
+    flex: 1;
+    padding-left: 48px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    height: 100%;
+}
+
+.hero-text .subtitle {
+    font-size: 2rem;      /* sekitar 32px */
+    color: #f06292;
+    margin-bottom: 14px;
+    font-weight: 500;
+}
+
+.hero-text .say-less {
+    font-size: 2rem;      /* sekitar 32px */
+    color: #f06292;
+    margin-bottom: 12px;
+    font-weight: 600;     /* lebih bold dari sebelumnya */
+}
+
+.hero-text .main-title {
+    font-size: 2.4rem;    /* sekitar 38px */
+    font-weight: bold;
+    color: #f06292;
+    display: block;
+    margin-bottom: 12px;   /* kurangi jarak bawah */
+    line-height: 1.1;      /* rapatkan antar baris */
+}
+
+.btn-get-started {
+    background-color: #f06292;
+    color: #fff;
+    width: 260px;
+    height: 56px;
+    padding: 0;
+    border-radius: 16px;
+    text-decoration: none;
+    font-weight: bold;
+    font-size: 1.3rem;
+    border: none;
+    margin-top: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 6px 18px rgba(240,98,146,0.15);
+    transition: background 0.2s;
+}
+
+.btn-get-started:hover {
+    background: #e05c8d;
+}
+
+.hero-img {
+    flex: 1;
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    padding-right: 60px;
+}
+
+.hero-img img {
+    width: 500px;
+    height: 500px;
+    object-fit: contain;
+    max-width: 100%;
+}
+
+/* --- INTRO SECTION --- */
+.intro {
+    background: #fff;
+    text-align: center;
+    padding: 40px 20px 0 20px;
+    margin: 0;
+}
+
+.intro h2 {
+    font-size: 2rem;
+    font-weight: bold;
+    margin-bottom: 16px;
+}
+
+.intro p {
+    font-size: 1.1rem;
+    max-width: 700px;
+    margin: 0 auto 24px auto;
+    line-height: 1.5;
+}
+
+/* --- FEATURES SECTION --- */
+.features {
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    gap: 60px;
+    background: #fff;
+    padding: 32px 0 48px 0;
+}
+
+.feature {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 200px;
+}
+
+.feature img {
+    width: 110px;
+    height: 110px;
+    margin-bottom: 10px;
+}
+
+.feature p {
+    font-size: 1.1rem;
+    margin-top: 8px;
+    text-align: center;
+    font-weight: bold;
+}
+
+
+/* --- RESPONSIVE --- */
+@media (max-width: 900px) {
+    .hero, .hero-content, .features {
+        flex-direction: column;
+        align-items: center;
+        height: auto;
+    }
+    .hero-img {
+        padding-right: 0;
+        margin-top: 20px;
+    }
+    .hero-text {
+        padding-left: 0;
+        text-align: center;
+    }
+    .features {
+        gap: 24px;
+    }
+}
+
+@media (max-width: 700px) {
+  .navbar {
+    flex-direction: column;
+    align-items: flex-start;
+    padding: 12px 12px;
+  }
+  .nav-links {
+    gap: 18px;
+  }
+  .btn-signup {
+    margin-left: 0;
+    margin-top: 10px;
+  }
+}
