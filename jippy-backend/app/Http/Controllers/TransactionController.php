@@ -83,7 +83,7 @@ class TransactionController extends Controller
         ]);
 
         // 2. Konfigurasi Midtrans (Ganti Server Key Anda)
-        \Midtrans\Config::$serverKey = 'Mid-server-UuGnuROuIifWGx3KVnYEVs6b'; // <--- ISI KEY ANDA DI SINI
+        \Midtrans\Config::$serverKey = env('MIDTRANS_SERVER_KEY');
         \Midtrans\Config::$isProduction = false;
         \Midtrans\Config::$isSanitized = true;
         \Midtrans\Config::$is3ds = true;
