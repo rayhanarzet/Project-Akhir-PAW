@@ -48,9 +48,9 @@
     <div class="max-w-7xl  mx-auto flex items-center justify-between p-4">
       <img src="/frontend/assets/LOGO.png" alt="Jippy" class="w-[64px] h-[64px]">
       <nav class="flex gap-10 items-center">
-        <a href="/frontend/menu.html" class="text-black font-medium cursor-pointer hover:bg-[#fff2c9] hover:text-black rounded-lg transition duration-300 px-4 py-1">Dashboard</a>
+        <a href="http://127.0.0.1:8001/" class="text-black font-medium cursor-pointer hover:bg-[#fff2c9] hover:text-black rounded-lg transition duration-300 px-4 py-1">Dashboard</a>
         <a href="#" class="bg-[#FDE7A1] px-4 py-1 rounded-lg font-medium border border-black">Pre-Order</a>
-        <a href="/frontend/TrackOrder.html" class="text-black font-medium cursor-pointer hover:bg-[#fff2c9] hover:text-black rounded-lg transition duration-300 px-4 py-1">My Order</a>
+        <a href="http://127.0.0.1:8000/tracking" class="text-black font-medium cursor-pointer hover:bg-[#fff2c9] hover:text-black rounded-lg transition duration-300 px-4 py-1">My Order</a>
         <a href="/frontend/LiveChat.html" class="text-black font-medium cursor-pointer hover:bg-[#fff2c9] hover:text-black rounded-lg transition duration-300 px-4 py-1">Live Chat</a>
       </nav>
       <div class="flex gap-4 items-center">
@@ -199,6 +199,9 @@
   </footer>
 
 <!-- MIDTRANS SNAP -->
+<!-- (SEMUA HTML TIDAK DIUBAH) -->
+
+<!-- MIDTRANS SNAP -->
 <script 
     type="text/javascript"
     src="https://app.sandbox.midtrans.com/snap/snap.js"
@@ -224,7 +227,6 @@ fetch(`http://127.0.0.1:8000/api/preorder/${id}`)
     .then(res => res.json())
     .then(p => {
 
-        /* HILANGKAN LOADING SETELAH PRODUK TERTAMPIL */
         document.getElementById("loading-overlay").style.display = "none";
 
         document.getElementById("checkout-name").textContent = p.name;
@@ -252,7 +254,14 @@ function updateTotal() {
 document.getElementById("plus-btn").onclick = () => { qty++; updateTotal(); };
 document.getElementById("minus-btn").onclick = () => { if(qty>1) qty--; updateTotal(); };
 
-// === HANDLE PEMBAYARAN MIDTRANS ===
+
+/*  
+===========================================================
+  FIX PALING PENTING — BAGIAN BAYAR  
+  Disamakan dengan TransactionController@store temanmu
+===========================================================
+*/
+
 document.getElementById("pay-btn").addEventListener("click", function () {
 
     const name = document.getElementById("ship-name").value;
@@ -260,24 +269,26 @@ document.getElementById("pay-btn").addEventListener("click", function () {
     const address = document.getElementById("ship-address").value;
     const note = document.getElementById("ship-note").value;
 
-    // VALIDASI WAJIB
     if (!name || !phone || !address) {
         alert("Nama, nomor telepon, dan alamat wajib diisi!");
         return;
     }
 
+    // TOTAL SAMA SEPERTI DI BACKEND
+    const finalTotal = (pricePerItem * qty) + 5000 + 25000;
+
     const payload = {
         product_id: id,
         quantity: qty,
-        variation: variation,
         customer_name: name,
         customer_phone: phone,
         customer_address: address,
-        customer_note: note
+        customer_note: note,
+        total_price: finalTotal
     };
 
-
-    fetch("http://127.0.0.1:8000/api/checkout", {
+    //  ⬅⬅⬅  UBah endpoint sesuai backend temanmu
+    fetch("http://127.0.0.1:8000/checkout/store", {
         method: "POST",
         headers: {
             "Content-Type": "application/json",
@@ -288,18 +299,18 @@ document.getElementById("pay-btn").addEventListener("click", function () {
 
     .then(res => res.json())
     .then(res => {
-        console.log("TOKEN MIDTRANS:", res.token);
 
-        snap.pay(res.token, {
+        console.log("Snap Token:", res.snap_token);
+
+        snap.pay(res.snap_token, {
+
             onSuccess: function(result){
-                alert("Pembayaran Berhasil!");
-                window.location.href = "/frontend/TrackOrder.html?paid=true&order_id=" + result.order_id;
-            },
+    window.location.href = "http://127.0.0.1:8000/tracking?status=processing";
+},
 
-            onPending: function(result){
-                alert("Menunggu Pembayaran...");
-                window.location.href = "/frontend/TrackOrder.html?pending=true&order_id=" + result.order_id;
-            },
+onPending: function(result){
+    window.location.href = "http://127.0.0.1:8000/tracking?status=processing";
+},
 
             onError: function(result){
                 alert("Pembayaran gagal!");
@@ -311,6 +322,7 @@ document.getElementById("pay-btn").addEventListener("click", function () {
         });
 
     })
+
     .catch(err => {
         console.error("Checkout Error:", err);
         alert("Terjadi kesalahan saat membuat transaksi.");

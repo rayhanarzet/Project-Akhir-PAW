@@ -15,5 +15,11 @@ class Transaction extends Model
         'quantity',
         'total_price',
         'payment_status',
+        'order_status',   // <<< WAJIB DITAMBAHKAN
     ];
+
+    public function product()
+    {
+        return $this->belongsTo(\App\Models\Product::class);
+    }
 }

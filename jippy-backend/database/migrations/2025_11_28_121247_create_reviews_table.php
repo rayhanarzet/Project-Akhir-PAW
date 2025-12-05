@@ -6,28 +6,31 @@ use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration
 {
-    /**
-     * Run the migrations.
-     */
     public function up(): void
-{
-    Schema::create('reviews', function (Blueprint $table) {
-        $table->id();
-        $table->string('username');
-        $table->integer('rating');
-        $table->string('summary'); 
-        $table->string('texture');
-        $table->string('expired');
-        // image_path kita tambahkan lewat migration satunya lagi, 
-        // tapi kalau mau langsung disini juga bisa. 
-        // Biar rapi sesuai command kamu, kita biarkan ini untuk data dasar dulu.
-        $table->timestamps();
-    });
-}
+    {
+        Schema::create('reviews', function (Blueprint $table) {
+            $table->id();
 
-    /**
-     * Reverse the migrations.
-     */
+            // relasi review → transaction
+            $table->unsignedBigInteger('transaction_id');
+
+            $table->string('username');
+            $table->integer('rating');
+            $table->string('summary');
+            $table->string('texture');
+            $table->string('expired');
+
+            $table->string('image_path')->nullable();
+
+            $table->timestamps();
+
+            $table->foreign('transaction_id')
+                ->references('id')
+                ->on('transactions')
+                ->onDelete('cascade');   // kalau transaksi dihapus, review ikut hilang
+        });
+    }
+
     public function down(): void
     {
         Schema::dropIfExists('reviews');

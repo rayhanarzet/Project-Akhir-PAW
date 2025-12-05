@@ -25,18 +25,23 @@
 
     <main class="main-content">
         <div class="product-section">
+
             <div class="product-header">
                 <a href="trackorder(3).html" class="back-btn">← Kembali</a> 
             </div>
+
             <div class="product-card">
-                <img src="assets/Laneige cushion.svg" alt="Laneige Cushion" class="product-image">
+                <img id="productImage" src="" alt="Produk" class="product-image">
+
                 <div class="product-info">
-                    <h1>Nilai - Laneige Cushion</h1>
+                    <h1 id="productTitle">Nilai - Produk</h1>
+
                     <div class="rating-summary">
                         <div class="stars" id="avgStars">☆☆☆☆☆</div>
                         <span class="average-rating" id="avgRating">0.0</span>
                         <span class="review-count" id="reviewCount">0 Reviews</span>
                     </div>
+
                     <button class="btn-primary" onclick="openCreateModal()">Beri Rating</button>
                 </div>
             </div>
@@ -62,13 +67,21 @@
         </div>
     </main>
 
-    <div id="createModal" class="modal" onclick="closeCreateModal()">
+    <!-- ==========================
+         CREATE MODAL
+    =========================== -->
+    <div id="createModal" class="modal">
         <div class="modal-content" onclick="event.stopPropagation()">
             <div class="modal-header">
                 <h2>Beri Nilai Produk</h2>
                 <button class="close-btn" onclick="closeCreateModal()">&times;</button>
             </div>
+
             <form id="reviewForm" class="review-form">
+
+                <!-- hidden transaction id -->
+                <input type="hidden" id="transactionIdInput" name="transaction_id">
+
                 <div class="form-group">
                     <label>Bintang</label>
                     <div class="star-selector" id="starSelector">
@@ -80,33 +93,53 @@
                     </div>
                     <input type="hidden" id="ratingInput" name="rating" value="0" required>
                 </div>
+
                 <div class="form-group">
                     <label>Ringkasan</label>
-                    <textarea id="summaryInput" name="summary" placeholder="max 20 kata" maxlength="100" required></textarea>
+                    <textarea id="summaryInput" name="summary" maxlength="100" required></textarea>
                     <small id="charCount">0/100</small>
                 </div>
+
                 <div class="form-group">
                     <label>Texture</label>
-                    <input type="text" id="textureInput" name="texture" placeholder="-" required>
+                    <input type="text" id="textureInput" name="texture" required>
                 </div>
+
                 <div class="form-group">
                     <label>Expired</label>
-                    <input type="text" id="expiredInput" name="expired" placeholder="-" required>
+                    <input type="text" id="expiredInput" name="expired" required>
                 </div>
+
                 <div class="form-group">
                     <label>Username</label>
-                    <div class="username-display" id="usernameDisplay">@totorap123 <span class="checkmark">✓</span></div>
+                    <div class="username-display">@totorap123 <span class="checkmark">✓</span></div>
                     <input type="hidden" id="usernameInput" name="username" value="@totorap123">
                 </div>
+
                 <div class="form-group">
-                    <label>Foto/video produk</label>
-                    <div class="upload-area" id="uploadArea">
-                        <svg class="upload-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="17 8 12 3 7 8"></polyline><line x1="12" y1="3" x2="12" y2="15"></line></svg>
-                        <p>Pilih file atau seret file kesini</p>
-                        <p style="font-size: 12px; color: #ff69b4; margin-top: 5px;">(Maksimum file: 2MB)</p>
-                    </div>
-                    <input type="file" id="fileInput" name="file" accept="image/*,video/*" style="display: none;">
-                </div>
+    <label>Foto Produk</label>
+
+    <div class="upload-wrapper">
+        <div class="upload-preview" id="previewContainer" style="display:none;">
+            <img id="previewImage" src="" alt="Preview">
+        </div>
+
+        <div class="upload-box" id="uploadBox">
+            <img src="assets/cloud.png" class="upload-icon-big">
+
+            <h3>Unggah Foto Produk</h3>
+            <p>Klik tombol di bawah</p>
+
+            <button type="button" class="btn-upload" onclick="document.getElementById('fileInput').click()">
+                + Pilih Gambar
+            </button>
+        </div>
+
+        <input type="file" id="fileInput" name="image" accept="image/*" style="display:none;">
+    </div>
+</div>
+
+
                 <div class="form-buttons">
                     <button type="button" class="btn-secondary" onclick="closeCreateModal()">Batal</button>
                     <button type="submit" class="btn-primary">Upload</button>
@@ -115,12 +148,16 @@
         </div>
     </div>
 
-    <div id="editModal" class="modal" onclick="closeEditModal()">
+    <!-- ==========================
+         EDIT MODAL
+    =========================== -->
+    <div id="editModal" class="modal">
         <div class="modal-content" onclick="event.stopPropagation()">
             <div class="modal-header">
                 <h2>Edit Nilai</h2>
                 <button class="close-btn" onclick="closeEditModal()">&times;</button>
             </div>
+
             <form id="editForm" class="review-form">
                 <div class="form-group">
                     <label>Bintang</label>
@@ -133,33 +170,34 @@
                     </div>
                     <input type="hidden" id="editRatingInput" name="rating" required>
                 </div>
+
                 <div class="form-group">
                     <label>Ringkasan</label>
-                    <textarea id="editSummaryInput" name="summary" maxlength="100" required></textarea>
+                    <textarea id="editSummaryInput" name="summary" required></textarea>
                 </div>
+
                 <div class="form-group">
                     <label>Texture</label>
                     <input type="text" id="editTextureInput" name="texture" required>
                 </div>
+
                 <div class="form-group">
                     <label>Expired</label>
                     <input type="text" id="editExpiredInput" name="expired" required>
                 </div>
+
                 <div class="form-buttons">
                     <button type="button" class="btn-secondary" onclick="closeEditModal()">Batal</button>
-                    <button type="submit" class="btn-primary">Simpan Perubahan</button>
+                    <button class="btn-primary">Simpan Perubahan</button>
                 </div>
             </form>
         </div>
     </div>
-    
-    <div id="successModal" class="modal">
-        </div>
 
     <footer class="footer">
         <div class="footer-content">
             <div class="footer-left">
-                <img src="assets/LOGO.png" alt="Jippy" class="footer-logo">
+                <img src="assets/LOGO.png" class="footer-logo">
                 <p>© Jippy 2025 - All Rights Reserved</p>
             </div>
             <div class="footer-right">
@@ -177,6 +215,43 @@
         </div>
     </footer>
 
+    <!-- nilai.js -->
     <script src="nilai.js"></script>
+
+    <!-- SCRIPT LOAD PRODUK -->
+    <script>
+        let txId = new URLSearchParams(window.location.search).get("transaction_id");
+
+        async function loadProductInfo() {
+            if (!txId) return;
+
+            try {
+                const res = await fetch(`http://127.0.0.1:8000/api/transaction/${txId}`);
+                const data = await res.json();
+
+                if (data && data.product) {
+                    document.getElementById("productTitle").textContent =
+                        "Nilai - " + data.product.name;
+
+                    document.getElementById("productImage").src =
+                        `http://127.0.0.1:8000/uploads/products/${data.product.image}`;
+                }
+            } catch (err) {
+                console.error("Gagal load product:", err);
+            }
+        }
+
+        document.addEventListener("DOMContentLoaded", () => {
+            loadProductInfo();
+            document.getElementById("transactionIdInput").value = txId;
+        });
+    </script>
+<script>
+document.addEventListener("DOMContentLoaded", () => {
+    document.getElementById("transactionIdInput").value =
+        new URLSearchParams(window.location.search).get("transaction_id");
+});
+</script>
+
 </body>
 </html>

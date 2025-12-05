@@ -6,6 +6,7 @@
     <title>Live Chat - JIPPY</title>
     <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
      <link href="style.css" rel="stylesheet">
+     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <style>
         :root {
             --chat-bg: #ffdbe8;
@@ -14,9 +15,11 @@
         }
 
         body {
-            font-family: 'Inter', sans-serif;
             margin: 0;
             background-color: #ffffff;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
         }
 
         .chat-title {
@@ -166,7 +169,7 @@ margin-top: 8px;
 
       <!-- NAVIGATION -->
       <nav class="flex gap-10 items-center">
-        <a href="/frontend/menu.html"
+        <a href="http://127.0.0.1:8001/"
            class="text-black font-medium cursor-pointer hover:bg-[#fff2c9] hover:text-black rounded-lg transition duration-300 px-4 py-1">
            Dashboard
         </a>
@@ -176,7 +179,7 @@ margin-top: 8px;
            Pre-Order
         </a>
 
-        <a href="/frontend/TrackOrder.html"
+        <a href="http://127.0.0.1:8000/tracking"
            class="text-black font-medium cursor-pointer hover:bg-[#fff2c9] hover:text-black rounded-lg transition duration-300 px-4 py-1">
            My Order
         </a>

@@ -18,13 +18,18 @@
         </div>
 
         <nav class="flex gap-8 items-center">
-            <a href="#" class="bg-[#FDE7A1] px-4 py-1 rounded-lg font-medium border border-black">
-                Semua Produk Pre-Order
+            <a href="http://127.0.0.1:8000/admin/preorder" class="bg-[#FDE7A1] px-4 py-1 rounded-lg font-medium border border-black">
+                Dashboard
             </a>
 
-            <a href="/admin/product/add"
+            <a href="http://127.0.0.1:8000/admin/product/add"
                class="text-black font-medium hover:bg-[#fff2c9] px-4 py-1 rounded-lg transition">
-                Tambah / Edit Produk
+                Tambah Produk
+            </a>
+
+            <a href="http://127.0.0.1:8000/admin/orders#"
+               class="text-black font-medium hover:bg-[#fff2c9] px-4 py-1 rounded-lg transition">
+                Daftar Pesanan
             </a>
         </nav>
         

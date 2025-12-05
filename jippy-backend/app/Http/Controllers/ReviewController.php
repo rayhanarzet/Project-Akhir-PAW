@@ -3,78 +3,97 @@
 namespace App\Http\Controllers;
 
 use App\Models\Review;
+use App\Models\Transaction;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 
 class ReviewController extends Controller
 {
+    // ===========================
+    // GET LIST REVIEW
+    // ===========================
     public function index()
     {
         $reviews = Review::orderBy('created_at', 'desc')->get();
-        
-        $formattedReviews = $reviews->map(function($review) {
+
+        $formatted = $reviews->map(function ($r) {
             return [
-                'id' => $review->id,
-                'username' => $review->username,
-                'rating' => $review->rating,
-                'summary' => $review->summary,
-                'texture' => $review->texture,
-                'expired' => $review->expired,
-                'date' => $review->created_at->format('d/m/Y'), 
-                'image_url' => $review->image_path ? asset('storage/' . $review->image_path) : null,
+                'id'            => $r->id,
+                'transaction_id'=> $r->transaction_id,
+                'product_id'    => $r->product_id,
+                'username'      => $r->username,
+                'rating'        => $r->rating,
+                'summary'       => $r->summary,
+                'texture'       => $r->texture,
+                'expired'       => $r->expired,
+                'date'          => $r->created_at->format('d/m/Y'),
+
+                // 🔥 WAJIB ADA: supaya frontend bisa render
+                'image_path'    => $r->image_path,
+
+                // Opsional untuk preview
+                'image_url'     => $r->image_path ? asset('storage/' . $r->image_path) : null,
             ];
         });
 
-        return response()->json($formattedReviews);
+        return response()->json($formatted);
     }
 
+    // ===========================
+    // STORE REVIEW
+    // ===========================
     public function store(Request $request)
     {
         $validated = $request->validate([
-            'username' => 'required|string',
-            'rating' => 'required|integer|min:1|max:5',
-            'summary' => 'required|string|max:100',
-            'texture' => 'required|string',
-            'expired' => 'required|string',
-            'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048', 
+            'transaction_id' => 'required|integer',
+            'username'       => 'required|string',
+            'rating'         => 'required|integer|min:1|max:5',
+            'summary'        => 'required|string|max:100',
+            'texture'        => 'required|string',
+            'expired'        => 'required|string',
+            'image'          => 'nullable|image|max:20480',
         ]);
 
+        $transaction = Transaction::find($request->transaction_id);
+        if (!$transaction) return response()->json(['error' => 'Transaction not found'], 404);
+
+        // otomatis ambil product_id dari transaksi
+        $validated['product_id'] = $transaction->product_id;
+
         if ($request->hasFile('image')) {
-            $path = $request->file('image')->store('reviews', 'public');
-            $validated['image_path'] = $path;
+            $validated['image_path'] = $request->file('image')->store('reviews', 'public');
         }
 
         $review = Review::create($validated);
 
-        return response()->json(['message' => 'Review berhasil disimpan', 'data' => $review], 201);
+        return response()->json(['message' => 'Review berhasil ditambah', 'data' => $review]);
     }
 
+    // ===========================
+    // UPDATE
+    // ===========================
     public function update(Request $request, $id)
     {
         $review = Review::find($id);
+        if (!$review) return response()->json(['error' => 'Review not found'], 404);
 
-        if (!$review) {
-            return response()->json(['message' => 'Review tidak ditemukan'], 404);
-        }
-
-        $validated = $request->validate([
-            'rating' => 'required|integer|min:1|max:5',
-            'summary' => 'required|string|max:100',
-            'texture' => 'required|string',
-            'expired' => 'required|string',
+        $review->update([
+            'rating'  => $request->rating,
+            'summary' => $request->summary,
+            'texture' => $request->texture,
+            'expired' => $request->expired,
         ]);
-        $review->update($validated);
 
-        return response()->json(['message' => 'Review berhasil diupdate', 'data' => $review], 200);
+        return response()->json(['message' => 'Review updated']);
     }
 
+    // ===========================
+    // DELETE
+    // ===========================
     public function destroy($id)
     {
         $review = Review::find($id);
-
-        if (!$review) {
-            return response()->json(['message' => 'Review tidak ditemukan'], 404);
-        }
+        if (!$review) return response()->json(['error' => 'Review not found'], 404);
 
         if ($review->image_path) {
             Storage::disk('public')->delete($review->image_path);
@@ -82,6 +101,6 @@ class ReviewController extends Controller
 
         $review->delete();
 
-        return response()->json(['message' => 'Review berhasil dihapus']);
+        return response()->json(['message' => 'Review deleted']);
     }
 }

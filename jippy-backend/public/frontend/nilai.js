@@ -1,405 +1,390 @@
 // ===============================================
-// KODE FULL NILAI.JS (FINAL: VALIDASI SIZE + ERROR HANDLING)
+// NILAI.JS – FINAL CLEAN VERSION (NO DUPLICATE)
 // ===============================================
 
-// 1. KONFIGURASI API
-const API_URL = 'http://127.0.0.1:8000/api/reviews';
+// Ambil transaction ID dari URL
+const urlParams = new URLSearchParams(window.location.search);
+const transactionId = urlParams.get("transaction_id");
 
-// Variabel Global
+// API URL
+const API_LIST        = "http://127.0.0.1:8000/api/review/list";
+const API_STORE       = "http://127.0.0.1:8000/api/review/store";
+const API_UPDATE      = "http://127.0.0.1:8000/api/review/";
+const API_DELETE      = "http://127.0.0.1:8000/api/review/";
+const API_TRANSACTION = "http://127.0.0.1:8000/api/transaction/";
+
 let reviews = [];
-let editingId = null; // Menyimpan ID database saat mode edit
+let editingId = null;
 
-// ===================================
-// BAGIAN 1: READ (AMBIL DATA & RENDER)
-// ===================================
 
-async function loadReviews() {
+// ===================================================
+// TOAST
+// ===================================================
+function showToast(message) {
+    const t = document.createElement("div");
+    t.className = "toast";
+    t.textContent = message;
+    document.body.appendChild(t);
+
+    setTimeout(() => t.classList.add("show"), 50);
+    setTimeout(() => {
+        t.classList.remove("show");
+        setTimeout(() => t.remove(), 300);
+    }, 2000);
+}
+
+
+// ===================================================
+// LOAD PRODUCT INFO
+// ===================================================
+async function loadProductInfo() {
     try {
-        const response = await fetch(API_URL);
-        
-        if (!response.ok) {
-            throw new Error(`HTTP error! status: ${response.status}`);
-        }
-        
-        reviews = await response.json();
-        renderReviews();
-        calculateAverageRating(); 
-    } catch (error) {
-        console.error('Error loading reviews:', error);
-        // Tetap render agar kalau kosong muncul state kosong
-        renderReviews(); 
+        const res = await fetch(API_TRANSACTION + transactionId);
+        const data = await res.json();
+
+        if (!data || !data.product) return;
+
+        document.getElementById("productTitle").textContent =
+            "Nilai - " + data.product.name;
+
+        document.getElementById("productImage").src =
+            `http://127.0.0.1:8000/uploads/products/${data.product.image}`;
+
+    } catch (err) {
+        console.error("Gagal load product:", err);
     }
 }
 
-function renderReviews() {
-    const reviewsList = document.getElementById('reviewsList');
-    const emptyState = document.getElementById('emptyState');
-    
-    reviewsList.innerHTML = '';
 
-    if (reviews.length === 0) {
-        emptyState.style.display = 'flex';
+// ===================================================
+// LOAD REVIEWS
+// ===================================================
+async function loadReviews() {
+    const res = await fetch(API_LIST);
+    const all = await res.json();
+
+    reviews = all.filter(r => r.transaction_id == transactionId);
+
+    calculateAverageRating();
+    applyFilter(); // <-- DITAMBAHKAN (TIDAK MERUBAH FUNGSI LAIN)
+}
+
+
+// ===================================================
+// DEFAULT RENDER REVIEW LIST
+// ===================================================
+function renderReviewsForFilter(list) {
+    const container = document.getElementById("reviewsList");
+    const empty = document.getElementById("emptyState");
+
+    container.innerHTML = "";
+
+    if (list.length === 0) {
+        empty.style.display = "flex";
         return;
-    } else {
-        emptyState.style.display = 'none';
     }
+    empty.style.display = "none";
 
-    reviews.forEach((review, index) => {
-        const reviewCard = document.createElement('div');
-        reviewCard.className = 'review-card';
+    list.forEach((r, index) => {
+        let img = r.image_path
+            ? `<img src="http://127.0.0.1:8000/storage/${r.image_path}" 
+                 style="width:100px;height:100px;border-radius:8px;margin:10px 0;">`
+            : "";
 
-        // Tampilkan Gambar (Jika Ada)
-        const imageHtml = review.image_url 
-            ? `<div class="review-image" style="margin-top: 10px; margin-bottom: 10px;">
-                 <img src="${review.image_url}" alt="Review Image" style="width: 100px; height: 100px; object-fit: cover; border-radius: 8px; border: 1px solid #eee;">
-               </div>` 
-            : '';
+        container.innerHTML += `
+            <div class="review-card">
+                <div class="review-header">
+                    <div>
+                        <span class="review-username">${r.username}</span>
+                        <span class="review-date">${r.date}</span>
+                    </div>
 
-        reviewCard.innerHTML = `
-            <div class="review-header">
-                <div class="review-user-date">
-                    <span class="review-username">${review.username}</span>
-                    <span class="review-date">${review.date}</span>
+                    <div>
+                        <button class="btn-small btn-edit" onclick="openEditModal(${reviews.indexOf(r)})">Edit</button>
+                        <button class="btn-small btn-delete" onclick="deleteReview(${r.id})">Delete</button>
+                    </div>
                 </div>
-                <div class="review-actions">
-                    <button class="btn-small btn-edit" onclick="openEditModal(${index})">Edit</button>
-                    <button class="btn-small btn-delete" onclick="deleteReview(${review.id})">Delete</button>
-                </div>
-            </div>
-            
-            <div class="review-rating">${'★'.repeat(review.rating)}${'☆'.repeat(5 - review.rating)}</div>
-            
-            ${imageHtml}
 
-            <div class="review-title">${review.summary}</div>
-            
-            <div class="review-details">
-                <div class="review-detail-item">
-                    <span class="review-detail-label">Texture:</span> ${review.texture}
+                <div class="review-rating">
+                    ${"★".repeat(r.rating)}${"☆".repeat(5 - r.rating)}
                 </div>
-                <div class="review-detail-item">
-                    <span class="review-detail-label">Expired:</span> ${review.expired}
+
+                ${img}
+
+                <div class="review-title">${r.summary}</div>
+
+                <div class="review-details">
+                    <p><strong>Texture:</strong> ${r.texture}</p>
+                    <p><strong>Expired:</strong> ${r.expired}</p>
                 </div>
             </div>
         `;
-        reviewsList.appendChild(reviewCard);
     });
 }
 
+
+// ===================================================
+// FILTER SYSTEM (DITAMBAHKAN — TIDAK MENGGANGGU KODE LAIN)
+// ===================================================
+function applyFilter() {
+    const activeBtn = document.querySelector(".filter-btn.active");
+    if (!activeBtn) return;
+
+    const filterValue = activeBtn.dataset.filter;
+
+    const filtered = (filterValue === "all")
+        ? reviews
+        : reviews.filter(r => r.rating == filterValue);
+
+    renderReviewsForFilter(filtered);
+}
+
+
+// ===================================================
+// AVERAGE RATING
+// ===================================================
 function calculateAverageRating() {
-    const avgRatingElem = document.getElementById('avgRating');
-    const avgStarsElem = document.getElementById('avgStars');
-    const reviewCountElem = document.getElementById('reviewCount');
-    
+    const avgElem = document.getElementById("avgRating");
+    const starsElem = document.getElementById("avgStars");
+    const countElem = document.getElementById("reviewCount");
+
     if (reviews.length === 0) {
-        if(avgRatingElem) avgRatingElem.textContent = '0.0';
-        if(avgStarsElem) avgStarsElem.textContent = '☆☆☆☆☆';
-        if(reviewCountElem) reviewCountElem.textContent = '0 Reviews';
+        avgElem.textContent = "0.0";
+        starsElem.textContent = "☆☆☆☆☆";
+        countElem.textContent = "0 Reviews";
         return;
     }
 
-    const total = reviews.reduce((sum, rev) => sum + rev.rating, 0);
+    const total = reviews.reduce((a, r) => a + r.rating, 0);
     const avg = (total / reviews.length).toFixed(1);
-    
-    if(avgRatingElem) avgRatingElem.textContent = avg;
-    if(reviewCountElem) reviewCountElem.textContent = `${reviews.length} Reviews`;
-    
-    const starCount = Math.round(avg);
-    if(avgStarsElem) avgStarsElem.textContent = '★'.repeat(starCount) + '☆'.repeat(5 - starCount);
+
+    avgElem.textContent = avg;
+    countElem.textContent = `${reviews.length} Reviews`;
+
+    const rounded = Math.round(avg);
+    starsElem.textContent = "★".repeat(rounded) + "☆".repeat(5 - rounded);
 }
 
-// ===================================
-// BAGIAN 2: CREATE (UPLOAD DENGAN VALIDASI SIZE)
-// ===================================
 
+// ===================================================
+// CREATE REVIEW
+// ===================================================
 async function submitNewReview(e) {
     e.preventDefault();
-    
-    // 1. Ambil Element
-    const summary = document.getElementById('summaryInput').value;
-    const texture = document.getElementById('textureInput').value;
-    const expired = document.getElementById('expiredInput').value;
-    const rating = document.getElementById('ratingInput').value;
-    const username = document.getElementById('usernameInput').value;
-    const fileInput = document.getElementById('fileInput');
 
-    // 2. Validasi Bintang
-    if (!rating || rating === "0") {
-        alert('Mohon berikan bintang!');
-        return;
-    }
-
-    // 3. VALIDASI UKURAN FILE (MAX 10MB)
-    if (fileInput.files.length > 0) {
-        const file = fileInput.files[0];
-        const fileSizeInMB = file.size / (1024 * 1024); // Byte ke MB
-        
-        if (fileSizeInMB > 10) {
-            alert(`File terlalu besar! Ukuran file Anda: ${fileSizeInMB.toFixed(2)}MB.\nMaksimum yang diizinkan adalah 10MB.`);
-            return; // Stop, jangan kirim ke server
-        }
-    }
-
-    // 4. SIAPKAN FORM DATA
     const formData = new FormData();
-    formData.append('username', username);
-    formData.append('rating', rating);
-    formData.append('summary', summary);
-    formData.append('texture', texture);
-    formData.append('expired', expired);
+    formData.append("transaction_id", transactionId);
+    formData.append("username", document.getElementById("usernameInput").value);
+    formData.append("rating", document.getElementById("ratingInput").value);
+    formData.append("summary", document.getElementById("summaryInput").value);
+    formData.append("texture", document.getElementById("textureInput").value);
+    formData.append("expired", document.getElementById("expiredInput").value);
 
-    if (fileInput.files.length > 0) {
-        formData.append('image', fileInput.files[0]);
-    }
+    const file = document.getElementById("fileInput").files[0];
+    if (file) formData.append("image", file);
 
-    // 5. Kirim ke Backend
-    try {
-        const response = await fetch(API_URL, {
-            method: 'POST',
-            body: formData,
-            headers: {
-                'Accept': 'application/json' // Agar error direturn sebagai JSON
-            }
-        });
+    await fetch(API_STORE, { method: "POST", body: formData });
 
-        // Cek Response
-        if (!response.ok) {
-            const errorData = await response.json();
-            console.error("Server Error:", errorData);
-            
-            // Susun pesan error yang enak dibaca user
-            let pesan = 'Gagal menyimpan review.';
-            if (errorData.message) pesan += `\nInfo: ${errorData.message}`;
-            if (errorData.errors && errorData.errors.image) pesan += `\nMasalah File: ${errorData.errors.image[0]}`;
-            
-            throw new Error(pesan);
-        }
-
-        await loadReviews(); 
-        closeCreateModal();
-        alert('Review Berhasil di Upload!');
-        
-    } catch (error) {
-        console.error('Error:', error);
-        alert(error.message); // Tampilkan pesan error detail
-    }
+    closeCreateModal();
+    loadReviews();
+    showToast("Review berhasil ditambahkan!");
 }
 
-// ===================================
-// BAGIAN 3: UPDATE (EDIT DATA)
-// ===================================
 
+// ===================================================
+// OPEN EDIT MODAL
+// ===================================================
 function openEditModal(index) {
-    const review = reviews[index];
-    editingId = review.id; // ID Database
+    const r = reviews[index];
+    editingId = r.id;
 
-    document.getElementById('editSummaryInput').value = review.summary;
-    document.getElementById('editTextureInput').value = review.texture;
-    document.getElementById('editExpiredInput').value = review.expired;
-    setEditStars(review.rating);
-    
-    document.getElementById('editModal').classList.add('show');
-    document.body.style.overflow = 'hidden';
+    document.getElementById("editSummaryInput").value = r.summary;
+    document.getElementById("editTextureInput").value = r.texture;
+    document.getElementById("editExpiredInput").value = r.expired;
+    document.getElementById("editRatingInput").value = r.rating;
+
+    setEditStars(r.rating);
+
+    document.getElementById("editModal").classList.add("show");
 }
 
+
+// ===================================================
+// SUBMIT EDIT
+// ===================================================
 async function submitEditReview(e) {
     e.preventDefault();
 
-    if (!editingId) {
-        alert("Error ID tidak ditemukan, silakan refresh.");
-        return;
-    }
-
-    const updatedRating = parseInt(document.getElementById('editRatingInput').value);
-    
-    if (!updatedRating || updatedRating === 0) {
-        alert('Mohon berikan bintang!');
-        return;
-    }
-
-    const updateData = {
-        rating: updatedRating,
-        summary: document.getElementById('editSummaryInput').value,
-        texture: document.getElementById('editTextureInput').value,
-        expired: document.getElementById('editExpiredInput').value
+    const data = {
+        rating: document.getElementById("editRatingInput").value,
+        summary: document.getElementById("editSummaryInput").value,
+        texture: document.getElementById("editTextureInput").value,
+        expired: document.getElementById("editExpiredInput").value,
     };
 
-    try {
-        const response = await fetch(`${API_URL}/${editingId}`, {
-            method: 'PUT',
-            headers: {
-                'Content-Type': 'application/json',
-                'Accept': 'application/json'
-            },
-            body: JSON.stringify(updateData)
-        });
-
-        if (!response.ok) {
-            const errorData = await response.json();
-            throw new Error(errorData.message || 'Gagal update review');
-        }
-
-        await loadReviews();
-        closeEditModal();
-        alert('Perubahan ulasan berhasil disimpan!');
-
-    } catch (error) {
-        console.error('Error:', error);
-        alert(error.message);
-    }
-}
-
-// ===================================
-// BAGIAN 4: DELETE
-// ===================================
-
-async function deleteReview(id) {
-    if (confirm('Apakah Anda yakin ingin menghapus ulasan ini?')) {
-        try {
-            const response = await fetch(`${API_URL}/${id}`, {
-                method: 'DELETE',
-                headers: { 'Accept': 'application/json' }
-            });
-
-            if (!response.ok) throw new Error('Gagal menghapus');
-
-            await loadReviews();
-            alert('Ulasan berhasil dihapus!');
-            
-        } catch (error) {
-            console.error('Error:', error);
-            alert('Gagal menghapus ulasan.');
-        }
-    }
-}
-
-// ===================================
-// BAGIAN 5: HELPER UI & EVENT LISTENERS
-// ===================================
-
-function openCreateModal() {
-    document.getElementById('createModal').classList.add('show');
-    document.body.style.overflow = 'hidden';
-}
-
-function closeCreateModal() {
-    document.getElementById('createModal').classList.remove('show');
-    document.body.style.overflow = 'auto';
-    document.getElementById('reviewForm').reset();
-    
-    // Reset teks upload
-    const uploadText = document.querySelector('#uploadArea p');
-    if(uploadText) uploadText.textContent = 'Pilih file atau seret file kesini';
-    
-    resetStarSelection('starSelector');
-}
-
-function closeEditModal() {
-    document.getElementById('editModal').classList.remove('show');
-    document.body.style.overflow = 'auto';
-    editingId = null;
-}
-
-function resetStarSelection(selectorId) {
-    const starBtns = document.getElementById(selectorId).querySelectorAll('.star-btn');
-    starBtns.forEach(btn => {
-        btn.classList.remove('selected');
-        btn.textContent = '☆';
+    await fetch(API_UPDATE + editingId, {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(data),
     });
-    document.getElementById('ratingInput').value = '';
-}
 
-function setEditStars(rating) {
-    const selector = document.getElementById('editStarSelector');
-    const input = document.getElementById('editRatingInput');
-    input.value = rating;
-
-    const starBtns = selector.querySelectorAll('.star-btn');
-    starBtns.forEach(btn => {
-        const btnRating = parseInt(btn.getAttribute('data-rating'));
-        if (btnRating <= rating) {
-            btn.classList.add('selected');
-            btn.textContent = '★';
-        } else {
-            btn.classList.remove('selected');
-            btn.textContent = '☆';
-        }
-    });
-}
-
-function setupStarListeners(selector, inputId) {
-    const starBtns = selector.querySelectorAll('.star-btn');
-    starBtns.forEach(button => {
-        button.addEventListener('click', () => {
-            const ratingValue = parseInt(button.getAttribute('data-rating'));
-            document.getElementById(inputId).value = ratingValue;
-            
-            starBtns.forEach(btn => {
-                const btnRating = parseInt(btn.getAttribute('data-rating'));
-                btn.textContent = (btnRating <= ratingValue) ? '★' : '☆';
-                btn.classList.toggle('selected', btnRating <= ratingValue);
-            });
-        });
-    });
-}
-
-// INIT
-document.addEventListener('DOMContentLoaded', () => {
+    closeEditModal();
     loadReviews();
+    showToast("Review berhasil diperbarui!");
+}
 
-    const reviewForm = document.getElementById('reviewForm');
-    if (reviewForm) reviewForm.addEventListener('submit', submitNewReview);
 
-    const editForm = document.getElementById('editForm');
-    if (editForm) editForm.addEventListener('submit', submitEditReview);
+// ===================================================
+// DELETE REVIEW + CONFIRM
+// ===================================================
+async function deleteReview(id) {
+    if (!confirm("Yakin ingin menghapus review ini?")) return;
 
-    const starSelector = document.getElementById('starSelector');
-    if (starSelector) setupStarListeners(starSelector, 'ratingInput');
+    await fetch(API_DELETE + id, { method: "DELETE" });
+    loadReviews();
+    showToast("Review berhasil dihapus!");
+}
 
-    const editStarSelector = document.getElementById('editStarSelector');
-    if (editStarSelector) setupStarListeners(editStarSelector, 'editRatingInput');
 
-    const summaryInput = document.getElementById('summaryInput');
-    const charCount = document.getElementById('charCount');
-    if (summaryInput && charCount) {
-        summaryInput.addEventListener('input', () => {
-            charCount.textContent = `${summaryInput.value.length}/${summaryInput.getAttribute('maxlength')}`;
-        });
-    }
+// ===================================================
+// STAR SELECTOR — CREATE
+// ===================================================
+document.addEventListener("DOMContentLoaded", () => {
+    const stars = document.querySelectorAll("#starSelector .star-btn");
 
-    const uploadArea = document.getElementById('uploadArea');
-    const fileInput = document.getElementById('fileInput');
-    if (uploadArea && fileInput) {
-        uploadArea.addEventListener('click', () => fileInput.click());
-        fileInput.addEventListener('change', () => {
-            const fileName = fileInput.files.length > 0 
-                ? `File: ${fileInput.files[0].name}` 
-                : 'Pilih file atau seret file kesini';
-            // Pastikan kita hanya ubah teks paragraf pertama agar info (Max 10MB) tidak hilang
-            const pFirst = uploadArea.querySelector('p'); 
-            if(pFirst) pFirst.textContent = fileName;
-        });
-    }
+    stars.forEach(btn => {
+        btn.addEventListener("click", () => {
+            const val = btn.dataset.rating;
+            document.getElementById("ratingInput").value = val;
 
-    // Filter Sederhana
-    const filterButtons = document.querySelectorAll('.filter-btn');
-    filterButtons.forEach(button => {
-        button.addEventListener('click', () => {
-            filterButtons.forEach(btn => btn.classList.remove('active'));
-            button.classList.add('active');
-            
-            const filterValue = button.getAttribute('data-filter');
-            const reviewCards = document.querySelectorAll('.review-card');
-            
-            reviewCards.forEach(card => {
-                const ratingText = card.querySelector('.review-rating').textContent;
-                const starCount = (ratingText.match(/★/g) || []).length;
-                if (filterValue === 'all' || starCount == filterValue) {
-                    card.style.display = 'block';
+            stars.forEach(s => {
+                if (s.dataset.rating <= val) {
+                    s.textContent = "★";
+                    s.classList.add("active");
                 } else {
-                    card.style.display = 'none';
+                    s.textContent = "☆";
+                    s.classList.remove("active");
                 }
             });
         });
     });
+});
+
+
+// ===================================================
+// STAR SELECTOR — EDIT
+// ===================================================
+function setEditStars(current) {
+    const stars = document.querySelectorAll("#editStarSelector .star-btn");
+
+    stars.forEach(s => {
+        s.textContent = s.dataset.rating <= current ? "★" : "☆";
+        s.classList.toggle("active", s.dataset.rating <= current);
+    });
+
+    stars.forEach(btn => {
+        btn.addEventListener("click", () => {
+            const val = btn.dataset.rating;
+            document.getElementById("editRatingInput").value = val;
+
+            stars.forEach(s => {
+                if (s.dataset.rating <= val) {
+                    s.textContent = "★";
+                    s.classList.add("active");
+                } else {
+                    s.textContent = "☆";
+                    s.classList.remove("active");
+                }
+            });
+        });
+    });
+}
+
+
+// ===================================================
+// OPEN CREATE MODAL
+// ===================================================
+function openCreateModal() {
+    document.getElementById("reviewForm").reset();
+
+    document.querySelectorAll("#starSelector .star-btn").forEach(s => {
+        s.classList.remove("active");
+        s.textContent = "☆";
+    });
+
+    document.getElementById("ratingInput").value = 0;
+    document.getElementById("charCount").textContent = "0/100";
+
+    document.getElementById("previewContainer").style.display = "none";
+    document.getElementById("uploadBox").style.display = "block";
+    document.getElementById("fileInput").value = "";
+
+    document.getElementById("createModal").classList.add("show");
+}
+
+
+// ===================================================
+// CLOSE MODAL
+// ===================================================
+function closeCreateModal() {
+    document.getElementById("createModal").classList.remove("show");
+}
+
+function closeEditModal() {
+    document.getElementById("editModal").classList.remove("show");
+}
+
+
+// ===================================================
+// TEXT COUNTER
+// ===================================================
+document.getElementById("summaryInput").addEventListener("input", (e) => {
+    document.getElementById("charCount").textContent = `${e.target.value.length}/100`;
+});
+
+
+// ===================================================
+// PREVIEW GAMBAR
+// ===================================================
+document.getElementById("fileInput").addEventListener("change", function() {
+    const file = this.files[0];
+    if (!file) return;
+
+    const previewImage = document.getElementById("previewImage");
+    const previewContainer = document.getElementById("previewContainer");
+    const uploadBox = document.getElementById("uploadBox");
+
+    previewImage.src = URL.createObjectURL(file);
+    previewContainer.style.display = "block";
+    uploadBox.style.display = "none";
+});
+
+
+// ===================================================
+// FILTER BUTTON HANDLER (DITAMBAHKAN)
+// ===================================================
+document.addEventListener("DOMContentLoaded", () => {
+    document.querySelectorAll(".filter-btn").forEach(btn => {
+        btn.addEventListener("click", () => {
+
+            document.querySelectorAll(".filter-btn").forEach(b =>
+                b.classList.remove("active")
+            );
+
+            btn.classList.add("active");
+            applyFilter();
+        });
+    });
+});
+
+
+// ===================================================
+// INIT
+// ===================================================
+document.addEventListener("DOMContentLoaded", () => {
+    loadProductInfo();
+    loadReviews();
+
+    document.getElementById("reviewForm").addEventListener("submit", submitNewReview);
+    document.getElementById("editForm").addEventListener("submit", submitEditReview);
 });

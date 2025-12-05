@@ -18,20 +18,26 @@
         </div>
 
         <nav class="flex gap-8 items-center">
-            <a href="/admin/preorder" class="text-black font-medium hover:bg-[#fff2c9] px-4 py-1 rounded-lg transition">
-               Semua Produk Pre-Order
+            <a href="http://127.0.0.1:8000/admin/preorder" class="text-black font-medium hover:bg-[#fff2c9] px-4 py-1 rounded-lg transition">
+                Dashboard
             </a>
 
-            <a href="#" class="bg-[#FDE7A1] px-4 py-1 rounded-lg font-medium border border-black">
-               Tambah / Edit Produk
+            <a href="http://127.0.0.1:8000/admin/product/add"
+               class="bg-[#FDE7A1] px-4 py-1 rounded-lg font-medium border border-black">
+                Tambah Produk
             </a>
-            
+
+            <a href="http://127.0.0.1:8000/admin/orders#"
+               class="text-black font-medium hover:bg-[#fff2c9] px-4 py-1 rounded-lg transition">
+                Daftar Pesanan
+            </a>
         </nav>
-
+        
         <div class="flex gap-4 items-center">
             <img src="/frontend/assets/notif.png" class="w-[22px]">
             <img src="/frontend/assets/profil.png" class="w-[24px]">
         </div>
+
     </div>
 </header>
 
@@ -131,6 +137,7 @@
     </div>
 
 </form>
+
 
 
 <script>

@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="nilai.css" rel="stylesheet">
+    <title>Nilai Produk - JIPPY</title>
+</head>
+<body>
+    <header class="header">
+        <div class="header-content">
+            <img src="assets/LOGO.png" alt="Jippy" class="logo">
+            <nav class="navbar">
+                <a href="/frontend/menu.html" class="nav-link">Dashboard</a>
+                <a href="/preorder.html" class="nav-link">Pre-Order</a>
+                <a href="/frontend/TrackOrder.html" class="nav-link active">My Order</a> 
+                <a href="/frontend/LiveChat.html" class="nav-link">Live Chat</a>
+            </nav>
+            <div class="icons">
+                <button class="icon-btn"><img src="assets/notif.png" alt="Notifikasi"></button>
+                <button class="icon-btn"><img src="assets/profil.png" alt="Akun"></button>
+            </div>
+        </div>
+    </header>
+
+    <main class="main-content">
+        <div class="product-section">
+            <div class="product-header">
+                <a href="trackorder(3).html" class="back-btn">← Kembali</a> 
+            </div>
+            <div class="product-card">
+                <img src="assets/Laneige cushion.svg" alt="Laneige Cushion" class="product-image">
+                <div class="product-info">
+                    <h1>Nilai - Laneige Cushion</h1>
+                    <div class="rating-summary">
+                        <div class="stars" id="avgStars">☆☆☆☆☆</div>
+                        <span class="average-rating" id="avgRating">0.0</span>
+                        <span class="review-count" id="reviewCount">0 Reviews</span>
+                    </div>
+                    <button class="btn-primary" onclick="openCreateModal()">Beri Rating</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="filter-section">
+            <div class="filter-title">Filter Bintang</div>
+            <div class="filter-buttons">
+                <button class="filter-btn active" data-filter="all">Semua</button>
+                <button class="filter-btn" data-filter="5">⭐ 5</button>
+                <button class="filter-btn" data-filter="4">⭐ 4</button>
+                <button class="filter-btn" data-filter="3">⭐ 3</button>
+                <button class="filter-btn" data-filter="2">⭐ 2</button>
+                <button class="filter-btn" data-filter="1">⭐ 1</button>
+            </div>
+        </div>
+
+        <div class="reviews-section">
+            <div id="reviewsList" class="reviews-list"></div>
+            <div id="emptyState" class="empty-state">
+                <p>Belum ada review</p>
+            </div>
+        </div>
+    </main>
+
+    <div id="createModal" class="modal" onclick="closeCreateModal()">
+        <div class="modal-content" onclick="event.stopPropagation()">
+            <div class="modal-header">
+                <h2>Beri Nilai Produk</h2>
+                <button class="close-btn" onclick="closeCreateModal()">&times;</button>
+            </div>
+            <form id="reviewForm" class="review-form">
+                <div class="form-group">
+                    <label>Bintang</label>
+                    <div class="star-selector" id="starSelector">
+                        <button type="button" class="star-btn" data-rating="1">☆</button>
+                        <button type="button" class="star-btn" data-rating="2">☆</button>
+                        <button type="button" class="star-btn" data-rating="3">☆</button>
+                        <button type="button" class="star-btn" data-rating="4">☆</button>
+                        <button type="button" class="star-btn" data-rating="5">☆</button>
+                    </div>
+                    <input type="hidden" id="ratingInput" name="rating" value="0" required>
+                </div>
+                <div class="form-group">
+                    <label>Ringkasan</label>
+                    <textarea id="summaryInput" name="summary" placeholder="max 20 kata" maxlength="100" required></textarea>
+                    <small id="charCount">0/100</small>
+                </div>
+                <div class="form-group">
+                    <label>Texture</label>
+                    <input type="text" id="textureInput" name="texture" placeholder="-" required>
+                </div>
+                <div class="form-group">
+                    <label>Expired</label>
+                    <input type="text" id="expiredInput" name="expired" placeholder="-" required>
+                </div>
+                <div class="form-group">
+                    <label>Username</label>
+                    <div class="username-display" id="usernameDisplay">@totorap123 <span class="checkmark">✓</span></div>
+                    <input type="hidden" id="usernameInput" name="username" value="@totorap123">
+                </div>
+                <div class="form-group">
+                    <label>Foto/video produk</label>
+                    <div class="upload-area" id="uploadArea">
+                        <svg class="upload-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="17 8 12 3 7 8"></polyline><line x1="12" y1="3" x2="12" y2="15"></line></svg>
+                        <p>Pilih file atau seret file kesini</p>
+                        <p style="font-size: 12px; color: #ff69b4; margin-top: 5px;">(Maksimum file: 2MB)</p>
+                    </div>
+                    <input type="file" id="fileInput" name="file" accept="image/*,video/*" style="display: none;">
+                </div>
+                <div class="form-buttons">
+                    <button type="button" class="btn-secondary" onclick="closeCreateModal()">Batal</button>
+                    <button type="submit" class="btn-primary">Upload</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <div id="editModal" class="modal" onclick="closeEditModal()">
+        <div class="modal-content" onclick="event.stopPropagation()">
+            <div class="modal-header">
+                <h2>Edit Nilai</h2>
+                <button class="close-btn" onclick="closeEditModal()">&times;</button>
+            </div>
+            <form id="editForm" class="review-form">
+                <div class="form-group">
+                    <label>Bintang</label>
+                    <div class="star-selector" id="editStarSelector">
+                        <button type="button" class="star-btn" data-rating="1">☆</button>
+                        <button type="button" class="star-btn" data-rating="2">☆</button>
+                        <button type="button" class="star-btn" data-rating="3">☆</button>
+                        <button type="button" class="star-btn" data-rating="4">☆</button>
+                        <button type="button" class="star-btn" data-rating="5">☆</button>
+                    </div>
+                    <input type="hidden" id="editRatingInput" name="rating" required>
+                </div>
+                <div class="form-group">
+                    <label>Ringkasan</label>
+                    <textarea id="editSummaryInput" name="summary" maxlength="100" required></textarea>
+                </div>
+                <div class="form-group">
+                    <label>Texture</label>
+                    <input type="text" id="editTextureInput" name="texture" required>
+                </div>
+                <div class="form-group">
+                    <label>Expired</label>
+                    <input type="text" id="editExpiredInput" name="expired" required>
+                </div>
+                <div class="form-buttons">
+                    <button type="button" class="btn-secondary" onclick="closeEditModal()">Batal</button>
+                    <button type="submit" class="btn-primary">Simpan Perubahan</button>
+                </div>
+            </form>
+        </div>
+    </div>
+    
+    <div id="successModal" class="modal">
+        </div>
+
+    <footer class="footer">
+        <div class="footer-content">
+            <div class="footer-left">
+                <img src="assets/LOGO.png" alt="Jippy" class="footer-logo">
+                <p>© Jippy 2025 - All Rights Reserved</p>
+            </div>
+            <div class="footer-right">
+                <div class="footer-nav">
+                    <a href="#">Home</a>
+                    <a href="#">About Us</a>
+                    <a href="#">Contact Person</a>
+                </div>
+                <div class="footer-sub">
+                    <p>Terms of Use</p>
+                    <p>Privacy Policy</p>
+                    <p>Agreement</p>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <script src="nilai.js"></script>
+</body>
+</html>

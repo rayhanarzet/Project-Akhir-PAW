@@ -2,6 +2,7 @@
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
+use App\Models\Transaction;
 
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\MidtransController;
@@ -28,11 +29,19 @@ Route::delete('/preorder/{id}', [ProductController::class, 'destroy']);
 
 Route::post('/checkout', [MidtransController::class, 'checkout']);
 
-Route::get('/reviews', [ReviewController::class, 'index']);
-Route::post('/reviews', [ReviewController::class, 'store']);
-Route::put('/reviews/{id}', [ReviewController::class, 'update']);
-Route::delete('/reviews/{id}', [ReviewController::class, 'destroy']);
+Route::prefix('review')->group(function () {
+    Route::get('/list', [ReviewController::class, 'index']);      // GET semua review
+    Route::post('/store', [ReviewController::class, 'store']);    // POST review baru
+    Route::put('/{id}', [ReviewController::class, 'update']);     // UPDATE review
+    Route::delete('/{id}', [ReviewController::class, 'destroy']); // DELETE review
+});
+
 
 Route::get('/livechat/messages', [LiveChatController::class, 'fetch']);
 Route::post('/livechat/send', [LiveChatController::class, 'send']);
 Route::post('/livechat/send-file', [LiveChatController::class, 'sendFile']);
+
+// ===============================
+Route::get('/transaction/{id}', function($id) {
+    return \App\Models\Transaction::with('product')->find($id);
+});
