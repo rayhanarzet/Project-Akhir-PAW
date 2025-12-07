@@ -1,12 +1,8 @@
-// ===============================================
-// NILAI.JS – FINAL CLEAN VERSION (NO DUPLICATE)
-// ===============================================
-
-// Ambil transaction ID dari URL
+//Ambil transaction ID dari URL
 const urlParams = new URLSearchParams(window.location.search);
 const transactionId = urlParams.get("transaction_id");
 
-// API URL
+//API
 const API_LIST        = "http://127.0.0.1:8000/api/review/list";
 const API_STORE       = "http://127.0.0.1:8000/api/review/store";
 const API_UPDATE      = "http://127.0.0.1:8000/api/review/";
@@ -16,10 +12,7 @@ const API_TRANSACTION = "http://127.0.0.1:8000/api/transaction/";
 let reviews = [];
 let editingId = null;
 
-
-// ===================================================
-// TOAST
-// ===================================================
+//TOAST
 function showToast(message) {
     const t = document.createElement("div");
     t.className = "toast";
@@ -32,11 +25,7 @@ function showToast(message) {
         setTimeout(() => t.remove(), 300);
     }, 2000);
 }
-
-
-// ===================================================
-// LOAD PRODUCT INFO
-// ===================================================
+//LOAD PRODUCT INFO
 async function loadProductInfo() {
     try {
         const res = await fetch(API_TRANSACTION + transactionId);
@@ -54,11 +43,7 @@ async function loadProductInfo() {
         console.error("Gagal load product:", err);
     }
 }
-
-
-// ===================================================
 // LOAD REVIEWS
-// ===================================================
 async function loadReviews() {
     const res = await fetch(API_LIST);
     const all = await res.json();
@@ -66,13 +51,10 @@ async function loadReviews() {
     reviews = all.filter(r => r.transaction_id == transactionId);
 
     calculateAverageRating();
-    applyFilter(); // <-- DITAMBAHKAN (TIDAK MERUBAH FUNGSI LAIN)
+    applyFilter();
 }
 
-
-// ===================================================
-// DEFAULT RENDER REVIEW LIST
-// ===================================================
+//DEFAULT RENDER REVIEW LIST
 function renderReviewsForFilter(list) {
     const container = document.getElementById("reviewsList");
     const empty = document.getElementById("emptyState");
@@ -122,10 +104,7 @@ function renderReviewsForFilter(list) {
     });
 }
 
-
-// ===================================================
-// FILTER SYSTEM (DITAMBAHKAN — TIDAK MENGGANGGU KODE LAIN)
-// ===================================================
+//FILTER SYSTEM (DITAMBAHKAN — TIDAK MENGGANGGU KODE LAIN)
 function applyFilter() {
     const activeBtn = document.querySelector(".filter-btn.active");
     if (!activeBtn) return;
@@ -139,10 +118,7 @@ function applyFilter() {
     renderReviewsForFilter(filtered);
 }
 
-
-// ===================================================
-// AVERAGE RATING
-// ===================================================
+//AVERAGE RATING
 function calculateAverageRating() {
     const avgElem = document.getElementById("avgRating");
     const starsElem = document.getElementById("avgStars");
@@ -165,10 +141,7 @@ function calculateAverageRating() {
     starsElem.textContent = "★".repeat(rounded) + "☆".repeat(5 - rounded);
 }
 
-
-// ===================================================
-// CREATE REVIEW
-// ===================================================
+//CREATE REVIEW
 async function submitNewReview(e) {
     e.preventDefault();
 
@@ -190,10 +163,7 @@ async function submitNewReview(e) {
     showToast("Review berhasil ditambahkan!");
 }
 
-
-// ===================================================
-// OPEN EDIT MODAL
-// ===================================================
+//OPEN EDIT MODAL
 function openEditModal(index) {
     const r = reviews[index];
     editingId = r.id;
@@ -208,10 +178,7 @@ function openEditModal(index) {
     document.getElementById("editModal").classList.add("show");
 }
 
-
-// ===================================================
-// SUBMIT EDIT
-// ===================================================
+//SUBMIT EDIT
 async function submitEditReview(e) {
     e.preventDefault();
 
@@ -233,10 +200,7 @@ async function submitEditReview(e) {
     showToast("Review berhasil diperbarui!");
 }
 
-
-// ===================================================
-// DELETE REVIEW + CONFIRM
-// ===================================================
+//DELETE REVIEW + CONFIRM
 async function deleteReview(id) {
     if (!confirm("Yakin ingin menghapus review ini?")) return;
 
@@ -245,10 +209,7 @@ async function deleteReview(id) {
     showToast("Review berhasil dihapus!");
 }
 
-
-// ===================================================
-// STAR SELECTOR — CREATE
-// ===================================================
+//STAR SELECTOR — CREATE
 document.addEventListener("DOMContentLoaded", () => {
     const stars = document.querySelectorAll("#starSelector .star-btn");
 
@@ -270,10 +231,7 @@ document.addEventListener("DOMContentLoaded", () => {
     });
 });
 
-
-// ===================================================
-// STAR SELECTOR — EDIT
-// ===================================================
+//STAR SELECTOR — EDIT
 function setEditStars(current) {
     const stars = document.querySelectorAll("#editStarSelector .star-btn");
 
@@ -300,10 +258,7 @@ function setEditStars(current) {
     });
 }
 
-
-// ===================================================
 // OPEN CREATE MODAL
-// ===================================================
 function openCreateModal() {
     document.getElementById("reviewForm").reset();
 
@@ -322,10 +277,7 @@ function openCreateModal() {
     document.getElementById("createModal").classList.add("show");
 }
 
-
-// ===================================================
-// CLOSE MODAL
-// ===================================================
+//CLOSE MODAL
 function closeCreateModal() {
     document.getElementById("createModal").classList.remove("show");
 }
@@ -334,18 +286,12 @@ function closeEditModal() {
     document.getElementById("editModal").classList.remove("show");
 }
 
-
-// ===================================================
-// TEXT COUNTER
-// ===================================================
+//TEXT COUNTER
 document.getElementById("summaryInput").addEventListener("input", (e) => {
     document.getElementById("charCount").textContent = `${e.target.value.length}/100`;
 });
 
-
-// ===================================================
 // PREVIEW GAMBAR
-// ===================================================
 document.getElementById("fileInput").addEventListener("change", function() {
     const file = this.files[0];
     if (!file) return;
@@ -359,10 +305,7 @@ document.getElementById("fileInput").addEventListener("change", function() {
     uploadBox.style.display = "none";
 });
 
-
-// ===================================================
-// FILTER BUTTON HANDLER (DITAMBAHKAN)
-// ===================================================
+//FILTER BUTTON HANDLER (DITAMBAHKAN)
 document.addEventListener("DOMContentLoaded", () => {
     document.querySelectorAll(".filter-btn").forEach(btn => {
         btn.addEventListener("click", () => {
@@ -377,10 +320,7 @@ document.addEventListener("DOMContentLoaded", () => {
     });
 });
 
-
-// ===================================================
-// INIT
-// ===================================================
+//INIT
 document.addEventListener("DOMContentLoaded", () => {
     loadProductInfo();
     loadReviews();
