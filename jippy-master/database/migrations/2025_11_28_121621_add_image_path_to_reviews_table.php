@@ -6,21 +6,14 @@ use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration
 {
-    /**
-     * Run the migrations.
-     */
    public function up(): void
 {
     Schema::table('reviews', function (Blueprint $table) {
-        // Kita tambah kolom image_path, boleh kosong (nullable)
-        // ditaruh setelah kolom expired
+
         $table->string('image_path')->nullable()->after('expired');
     });
 }
 
-    /**
-     * Reverse the migrations.
-     */
     public function down(): void
     {
         Schema::table('reviews', function (Blueprint $table) {
