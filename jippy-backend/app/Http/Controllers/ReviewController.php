@@ -9,9 +9,6 @@ use Illuminate\Support\Facades\Storage;
 
 class ReviewController extends Controller
 {
-    // ===========================
-    // GET LIST REVIEW
-    // ===========================
     public function index()
     {
         $reviews = Review::orderBy('created_at', 'desc')->get();
@@ -28,10 +25,8 @@ class ReviewController extends Controller
                 'expired'       => $r->expired,
                 'date'          => $r->created_at->format('d/m/Y'),
 
-                // 🔥 WAJIB ADA: supaya frontend bisa render
                 'image_path'    => $r->image_path,
 
-                // Opsional untuk preview
                 'image_url'     => $r->image_path ? asset('storage/' . $r->image_path) : null,
             ];
         });
@@ -39,9 +34,6 @@ class ReviewController extends Controller
         return response()->json($formatted);
     }
 
-    // ===========================
-    // STORE REVIEW
-    // ===========================
     public function store(Request $request)
     {
         $validated = $request->validate([
@@ -57,7 +49,6 @@ class ReviewController extends Controller
         $transaction = Transaction::find($request->transaction_id);
         if (!$transaction) return response()->json(['error' => 'Transaction not found'], 404);
 
-        // otomatis ambil product_id dari transaksi
         $validated['product_id'] = $transaction->product_id;
 
         if ($request->hasFile('image')) {
@@ -69,9 +60,6 @@ class ReviewController extends Controller
         return response()->json(['message' => 'Review berhasil ditambah', 'data' => $review]);
     }
 
-    // ===========================
-    // UPDATE
-    // ===========================
     public function update(Request $request, $id)
     {
         $review = Review::find($id);
@@ -87,9 +75,6 @@ class ReviewController extends Controller
         return response()->json(['message' => 'Review updated']);
     }
 
-    // ===========================
-    // DELETE
-    // ===========================
     public function destroy($id)
     {
         $review = Review::find($id);
