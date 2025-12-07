@@ -2,7 +2,6 @@
 
 use Illuminate\Support\Facades\Route;
 
-// tambahan nindy
 use App\Http\Controllers\PreorderController;
 use App\Http\Controllers\TransactionController;
 use Illuminate\Http\Request;
@@ -10,26 +9,16 @@ use App\Http\Controllers\AdminOrderController;
 use App\Http\Controllers\ReviewController;
 
 Route::get('/preorder', [PreorderController::class, 'index'])->name('preorder');
-
-// Tracking (GET = tampil semua)
 Route::get('/tracking', [TransactionController::class, 'index'])->name('track.order');
-
-// Tracking (POST = hasil pencarian)
 Route::post('/tracking/check', [TransactionController::class, 'index'])->name('track.check');
 
-// Checkout
 Route::get('/checkout', [TransactionController::class, 'checkout'])->name('checkout');
 Route::post('/checkout/store', [TransactionController::class, 'store'])
     ->withoutMiddleware([\App\Http\Middleware\VerifyCsrfToken::class]);
 
-
-// Live Chat (PASTI BERHASIL)
 Route::get('/livechat', function () {
     return response()->file(public_path('frontend/LiveChat.html'));
 })->name('livechat');
-
-
-// ------------------------------------------------------------------------------
 
 Route::get('/', function () {
     return redirect('/admin');
