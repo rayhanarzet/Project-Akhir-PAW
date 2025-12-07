@@ -17,7 +17,7 @@ return new class extends Migration
             $table->string('customer_phone');
             $table->integer('quantity');
             $table->integer('total_price');
-            $table->string('payment_status')->default('pending'); // pending | success | failed
+            $table->string('payment_status')->default('pending'); 
             $table->timestamps();
 
             $table->foreign('product_id')->references('id')->on('products')->onDelete('cascade');
