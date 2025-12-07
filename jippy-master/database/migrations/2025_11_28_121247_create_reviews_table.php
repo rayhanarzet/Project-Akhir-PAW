@@ -6,9 +6,6 @@ use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration
 {
-    /**
-     * Run the migrations.
-     */
     public function up(): void
 {
     Schema::create('reviews', function (Blueprint $table) {
@@ -18,16 +15,10 @@ return new class extends Migration
         $table->string('summary'); 
         $table->string('texture');
         $table->string('expired');
-        // image_path kita tambahkan lewat migration satunya lagi, 
-        // tapi kalau mau langsung disini juga bisa. 
-        // Biar rapi sesuai command kamu, kita biarkan ini untuk data dasar dulu.
         $table->timestamps();
     });
 }
 
-    /**
-     * Reverse the migrations.
-     */
     public function down(): void
     {
         Schema::dropIfExists('reviews');
