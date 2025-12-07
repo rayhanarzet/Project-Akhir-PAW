@@ -11,7 +11,7 @@ class Review extends Model
 
     protected $fillable = [
         'transaction_id',
-        'product_id',     // ⬅️ tambahkan ini
+        'product_id',    
         'username',
         'rating',
         'summary',
@@ -25,7 +25,7 @@ class Review extends Model
         return $this->belongsTo(Transaction::class);
     }
 
-    public function product()          // ⬅️ relasi ke produk
+    public function product()        
     {
         return $this->belongsTo(Product::class);
     }
