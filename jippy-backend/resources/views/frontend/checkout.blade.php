@@ -9,7 +9,6 @@
         data-client-key="Mid-client-78zFNz_sO6aycR-B">
     </script>
     <style>
-        /* Spinner Loading */
         #loading-overlay { position: fixed; inset: 0; background: rgba(255, 255, 255, 0.95); display: flex; flex-direction: column; align-items: center; justify-content: center; z-index: 9999; display: none; }
         .loader { border: 4px solid #f3f3f3; border-top: 4px solid #FF96B5; border-radius: 50%; width: 45px; height: 45px; animation: spin 1s linear infinite; margin-bottom: 12px; }
         @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
@@ -164,48 +163,40 @@
 </footer>
 
 <script>
-    // Data dari PHP Laravel
+   
     const productId = "{{ $product->id }}";
     const pricePerItem = {{ $product->price }};
     let qty = {{ $quantity }};
     
-    // Update Tampilan Harga
     function updateDisplay() {
         document.getElementById('qty-display').innerText = qty;
         
         let subtotal = pricePerItem * qty;
-        let total = subtotal + 5000 + 25000; // Admin + Ongkir
+        let total = subtotal + 5000 + 25000; 
 
         document.getElementById('display-subtotal').innerText = "Rp " + subtotal.toLocaleString('id-ID');
         document.getElementById('display-total').innerText = "Rp " + total.toLocaleString('id-ID');
     }
 
-    // Tombol Plus Minus
     document.getElementById('plus-btn').onclick = () => { qty++; updateDisplay(); };
     document.getElementById('minus-btn').onclick = () => { if(qty > 1) qty--; updateDisplay(); };
 
-    // LOGIKA BAYAR (MIDTRANS)
     document.getElementById('pay-btn').addEventListener('click', function () {
         
-        // Ambil data form
         const name = document.getElementById('ship-name').value;
         const phone = document.getElementById('ship-phone').value;
         const address = document.getElementById('ship-address').value;
         const note = document.getElementById('ship-note').value;
 
-        // Validasi Sederhana
         if(!name || !phone || !address) {
             alert('Mohon lengkapi Nama, Telepon, dan Alamat!');
             return;
         }
 
-        // Tampilkan Loading
         document.getElementById('loading-overlay').style.display = 'flex';
 
-        // Hitung Total Akhir untuk dikirim ke server
         const finalTotal = (pricePerItem * qty) + 30000; 
 
-        // Kirim ke Laravel
         fetch("{{ route('checkout.process') }}", {
             method: "POST",
             headers: {
