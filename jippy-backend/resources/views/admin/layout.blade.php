@@ -8,7 +8,6 @@
 </head>
 <body class="bg-gray-50">
 
-    <!-- NAVBAR ADMIN -->
    <header class="bg-white shadow">
     <div class="max-w-7xl mx-auto flex items-center justify-between p-4">
 
@@ -41,7 +40,6 @@
     </div>
 </header>
 
-    <!-- PAGE CONTENT -->
     <div class="max-w-6xl mx-auto bg-white p-6 rounded shadow pt-10 mt-5">
 
         @yield('content')
