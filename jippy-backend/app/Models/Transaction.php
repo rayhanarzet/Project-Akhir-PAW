@@ -15,7 +15,7 @@ class Transaction extends Model
         'quantity',
         'total_price',
         'payment_status',
-        'order_status',   // <<< WAJIB DITAMBAHKAN
+        'order_status',  
     ];
 
     public function product()
