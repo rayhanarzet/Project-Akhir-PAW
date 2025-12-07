@@ -7,16 +7,13 @@
     <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
     <link href="{{ asset('frontend/style.css') }}" rel="stylesheet">
     <style>
-        /* Checkbox Style */
         .container input { appearance: none; width: 15px; height: 15px; border: 2px solid #ccc; border-radius: 4px; background-color: white; display: inline-block; position: relative; cursor: pointer; transition: all 0.2s ease-in-out; }
         .container input:checked { border-color: #FF96B5; }
         .container input:checked::after { content: ""; position: absolute; left: 4px; top: 1px; width: 4px; height: 8px; border: solid #FF96B5; border-width: 0 2px 2px 0; transform: rotate(45deg); }
         
-        /* Range Slider */
         .range-slider { -webkit-appearance: none; height: 6px; background: linear-gradient(to right, #FF96B5 0%, #FF96B5 100%, #e5e7eb 100%, #e5e7eb 100%); border-radius: 5px; outline: none; transition: background 450ms ease-in; }
         .range-slider::-webkit-slider-thumb { -webkit-appearance: none; height: 16px; width: 16px; border-radius: 50%; background: #FF96B5; cursor: pointer; border: 2px solid white; box-shadow: 0 0 2px rgba(0, 0, 0, 0.3); position: relative; z-index: 2; }
         
-        /* Loading Overlay */
         #loading-overlay { position: fixed; inset: 0; background: rgba(255, 255, 255, 0.9); display: flex; flex-direction: column; align-items: center; justify-content: center; z-index: 9999; font-family: sans-serif; }
         .loader { border: 4px solid #f3f3f3; border-top: 4px solid #FF96B5; border-radius: 50%; width: 45px; height: 45px; animation: spin 1s linear infinite; margin-bottom: 16px; }
         @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
@@ -109,41 +106,32 @@
     </footer>
 
 <script>
-/* ============================================================
-   DATA & LOGIC
-   ============================================================ */
+
 const overlay = document.getElementById("loading-overlay");
 const container = document.getElementById("product-list");
 
-// Ambil data dari Laravel Controller (Blade Variable)
 const productsFromLaravel = @json($products); 
 
-// Variabel global
 let allProducts = [];
 let filteredProducts = [];
 
-// Inisialisasi saat halaman dimuat
 document.addEventListener("DOMContentLoaded", () => {
     overlay.style.display = "none";
     allProducts = productsFromLaravel;
     filteredProducts = productsFromLaravel;
     
-    // Cek filter URL (jika ada ?category=fashion dari dashboard)
     const urlParams = new URLSearchParams(window.location.search);
     const categoryParam = urlParams.get('category');
     
     if(categoryParam) {
-        // Auto-centang checkbox yang sesuai
         document.querySelectorAll(`.category-checkbox[data-category="${categoryParam}"]`).forEach(cb => cb.checked = true);
-        applyFilters(); // Jalankan filter
+        applyFilters(); 
     } else {
         renderProducts(allProducts);
     }
 });
 
-/* ============================================================
-   RENDER PRODUK (CARD KECIL & RAPI)
-   ============================================================ */
+
 function renderProducts(list) {
   container.innerHTML = "";
 
@@ -153,7 +141,6 @@ function renderProducts(list) {
   }
 
   list.forEach(p => {
-    // Gunakan gambar default jika gambar rusak/tidak ada
     const imgSrc = p.image ? `/uploads/products/${p.image}` : '/frontend/assets/LOGO.png';
     container.innerHTML += `
     <article class="w-[240px] bg-white rounded-xl shadow border border-gray-200 overflow-hidden hover:shadow-lg transition-transform duration-300 hover:-translate-y-1 mx-auto flex flex-col">
@@ -190,15 +177,11 @@ function renderProducts(list) {
   });
 }
 
-/* ============================================================
-   FILTER LOGIC
-   ============================================================ */
 const checkboxes = document.querySelectorAll(".category-checkbox");
 const priceRange = document.getElementById("priceRange");
 const priceValue = document.getElementById("priceValue");
 const searchInput = document.getElementById("searchInput");
 
-// Event Listeners
 checkboxes.forEach(cb => cb.addEventListener("change", applyFilters));
 searchInput.addEventListener("input", applyFilters);
 priceRange.addEventListener("input", () => {
@@ -215,15 +198,12 @@ function applyFilters() {
     const searchQuery = searchInput.value.toLowerCase();
 
     filteredProducts = allProducts.filter(prod => {
-        // Filter Kategori (Case Insensitive & Partial Match)
         const prodCat = (prod.category || "").toLowerCase();
         const categoryMatch = selectedCategories.length === 0 || 
                               selectedCategories.some(c => prodCat.includes(c));
 
-        // Filter Harga
         const priceMatch = prod.price <= maxPrice;
 
-        // Filter Search
         const searchMatch = prod.name.toLowerCase().includes(searchQuery);
 
         return categoryMatch && priceMatch && searchMatch;
