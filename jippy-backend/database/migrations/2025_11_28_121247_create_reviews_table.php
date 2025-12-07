@@ -11,7 +11,6 @@ return new class extends Migration
         Schema::create('reviews', function (Blueprint $table) {
             $table->id();
 
-            // relasi review → transaction
             $table->unsignedBigInteger('transaction_id');
 
             $table->string('username');
@@ -27,7 +26,7 @@ return new class extends Migration
             $table->foreign('transaction_id')
                 ->references('id')
                 ->on('transactions')
-                ->onDelete('cascade');   // kalau transaksi dihapus, review ikut hilang
+                ->onDelete('cascade');   
         });
     }
 
