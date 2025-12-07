@@ -369,7 +369,6 @@
         
 
     <style>
-    /* Footer */
     footer {
       background-color: #FF96B5;
       padding: 2 rem 1 rem;
@@ -419,7 +418,6 @@
     }
   </style>
 
-  <!-- ===== FOOTER ===== -->
   <footer class="bg-[#FF96B5] py-4">
     <div class="max-w-6xl container mx-auto text-sm text-white">
       <div class="flex justify-between items-center">
